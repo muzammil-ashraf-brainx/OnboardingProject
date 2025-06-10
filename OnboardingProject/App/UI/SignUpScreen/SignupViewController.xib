@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SignupViewController" customModule="OnboardingProject" customModuleProvider="target">
             <connections>
+                <outlet property="scrollView" destination="tYU-jo-G5g" id="5Iv-Sp-3le"/>
                 <outlet property="signupView" destination="i5M-Pr-FkT" id="4rD-ca-fAr"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -71,6 +72,9 @@
                                                 </userDefinedRuntimeAttribute>
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                             </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="signupBtnTapped:" destination="-1" eventType="touchUpInside" id="cSD-79-89t"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                 </stackView>
@@ -105,6 +109,9 @@
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" title=""/>
+                                                    <connections>
+                                                        <action selector="googleSignupTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="sbs-mh-EGb"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
@@ -142,6 +149,9 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="361" height="52"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" title=""/>
+                                                    <connections>
+                                                        <action selector="appleSignupTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="dp4-98-zUf"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
@@ -217,6 +227,7 @@
                     <constraints>
                         <constraint firstItem="A56-CP-v4Y" firstAttribute="top" secondItem="tYU-jo-G5g" secondAttribute="top" id="AJH-dZ-Mxc"/>
                         <constraint firstItem="A56-CP-v4Y" firstAttribute="leading" secondItem="tYU-jo-G5g" secondAttribute="leading" id="PWf-1N-yqz"/>
+                        <constraint firstItem="A56-CP-v4Y" firstAttribute="height" relation="greaterThanOrEqual" secondItem="tYU-jo-G5g" secondAttribute="height" id="hBU-mE-JU9"/>
                         <constraint firstAttribute="bottom" secondItem="A56-CP-v4Y" secondAttribute="bottom" id="pAN-BR-15T"/>
                         <constraint firstAttribute="trailing" secondItem="A56-CP-v4Y" secondAttribute="trailing" id="rD0-kN-0pA"/>
                     </constraints>
@@ -229,14 +240,15 @@
                 <constraint firstItem="tYU-jo-G5g" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="EZb-ac-fzU"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="tYU-jo-G5g" secondAttribute="bottom" id="Fb5-7k-QOw"/>
                 <constraint firstItem="A56-CP-v4Y" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" id="dmx-bY-cA7"/>
-                <constraint firstItem="A56-CP-v4Y" firstAttribute="height" relation="greaterThanOrEqual" secondItem="tYU-jo-G5g" secondAttribute="height" id="hBU-mE-JU9"/>
                 <constraint firstItem="tYU-jo-G5g" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="xSz-nn-bLB"/>
             </constraints>
             <connections>
                 <outlet property="appleSignupBtn" destination="nmE-WO-2c1" id="QIn-ck-bKY"/>
                 <outlet property="confirmPasswordTextField" destination="la8-hV-Hbg" id="hRQ-la-qdX"/>
+                <outlet property="emailTextField" destination="PYJ-se-E7R" id="qjJ-ax-fJp"/>
                 <outlet property="googleSignupBtn" destination="9pB-Dw-sb2" id="2za-m7-pph"/>
                 <outlet property="passwordTextField" destination="sQu-va-cT3" id="vFv-iA-Oq4"/>
+                <outlet property="usernameTextField" destination="uho-Ro-Vd9" id="pS7-jh-vMa"/>
             </connections>
             <point key="canvasLocation" x="-48.091603053435115" y="19.718309859154932"/>
         </view>

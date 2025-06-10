@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SplashViewController" customModule="OnboardingProject" customModuleProvider="target">
             <connections>
+                <outlet property="loginBtn" destination="bvX-Bz-6pk" id="qrt-Oo-WgD"/>
                 <outlet property="signupBtn" destination="4WV-8b-hoQ" id="R3r-6m-Kll"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
