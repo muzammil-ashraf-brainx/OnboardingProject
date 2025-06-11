@@ -2,86 +2,107 @@
 //  SignupViewModel.swift
 //  OnboardingProject
 //
-//  Created by BrainX iOS Dev on 10/06/2025.
+//  Created by BrainX iOS Dev on 05/06/2025.
 //
 
 import Foundation
 
-enum SignupError: Error, LocalizedError {
-    case emptyEmail
-    case invalidEmail
-    case emptyUsername
-    case emptyPassword
-    case passwordsDoNotMatch
-    case signupFailed(String)
-    
-    var errorDescription: String? {
-        switch self {
-        case .emptyEmail: return "Email cannot be empty."
-        case .invalidEmail: return "Invalid email format."
-        case .emptyUsername: return "Username cannot be empty."
-        case .emptyPassword: return "Password cannot be empty."
-        case .passwordsDoNotMatch: return "Passwords do not match."
-        case .signupFailed(let message): return message
-        }
-    }
-}
+// MARK: - SignupViewModel
 
 class SignupViewModel {
     
     // MARK: - Properties
+    
     private let authRepo: AuthRepository
     
-    // MARK: - Initializer
+    // MARK: - Init
+    
     init(authRepo: AuthRepository = DefaultAuthRepository()) {
         self.authRepo = authRepo
     }
     
-    // MARK: - API Call
-    func signup(email: String?, username: String?, password: String?, confirmPassword: String?, completion: @escaping (Result<String, SignupError>) -> Void) {
-        // Validate inputs
-        guard let email = email, !email.isEmpty else {
-            completion(.failure(.emptyEmail))
+    // MARK: - Signup Logic
+    
+    func signup(
+        email: String?,
+        username: String?,
+        password: String?,
+        confirmPassword: String?,
+        completion: @escaping (Result<String, AppError>) -> Void
+    ) {
+        let trimmedEmail = email?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmedUsername = username?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmedPassword = password ?? ""
+        let trimmedConfirmPassword = confirmPassword ?? ""
+        
+        // MARK: - Validation
+        
+        if trimmedEmail.isEmpty {
+            completion(.failure(.emptyField(fieldName: "Email")))
             return
         }
-        guard isValidEmail(email) else {
+        
+        if !isValidEmail(trimmedEmail) {
             completion(.failure(.invalidEmail))
             return
         }
-        guard let username = username, !username.isEmpty else {
-            completion(.failure(.emptyUsername))
+        
+        if trimmedUsername.isEmpty {
+            completion(.failure(.emptyField(fieldName: "Username")))
             return
         }
-        guard let password = password, !password.isEmpty else {
-            completion(.failure(.emptyPassword))
+        
+        if trimmedPassword.isEmpty {
+            completion(.failure(.emptyField(fieldName: "Password")))
             return
         }
-        guard let confirmPassword = confirmPassword, password == confirmPassword else {
+        
+        if trimmedPassword.count < 8 {
+            completion(.failure(.passwordTooShort(minLength: 8)))
+            return
+        }
+        
+        if trimmedConfirmPassword != trimmedPassword {
             completion(.failure(.passwordsDoNotMatch))
             return
         }
         
         let signupRequestParams: [String: Any] = [
-            "username": username,
-            "email": email,
-            "password": password,
-            "confirmPassword": confirmPassword
+            "username": trimmedUsername,
+            "email": trimmedEmail,
+            "password": trimmedPassword,
+            "confirmPassword": trimmedConfirmPassword
         ]
+        
+        print("Signup Params Being Sent From ViewModel: \(signupRequestParams)")
+        
+        // MARK: - Call Auth Repo
         
         authRepo.signup(signupRequestParams: signupRequestParams) { result in
             switch result {
             case .success(let response):
-                let usernameFromResponse = response.data?.user?.username ?? username
-                completion(.success("Signup successful. Welcome, \(usernameFromResponse)!"))
+                let usernameFromResponse = response.data?.user?.username ?? trimmedUsername
+                completion(.success("Signup successful. Welcome, \(usernameFromResponse)."))
             case .failure(let error):
-                completion(.failure(.signupFailed(error.localizedDescription)))
+                let message = error.localizedDescription.lowercased()
+                
+                if message.contains("email already exists") {
+                    completion(.failure(.emailAlreadyExists))
+                } else if message.contains("username already exists") {
+                    completion(.failure(.usernameAlreadyExists))
+                } else {
+                    completion(.failure(.backend(message: "Something went wrong. Please try again.")))
+                }
+                
             }
         }
     }
     
-    // MARK: - Validation
+    // MARK: - Email Format Validator
+    
     private func isValidEmail(_ email: String) -> Bool {
         let regex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
         return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: email)
     }
+    
 }

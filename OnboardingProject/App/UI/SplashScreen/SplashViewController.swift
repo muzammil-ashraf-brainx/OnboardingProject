@@ -7,38 +7,60 @@
 
 import UIKit
 
+// MARK: - SplashViewController
 class SplashViewController: UIViewController {
     
     // MARK: - Outlets
-    @IBOutlet private weak var signupBtn: UIButton!
-    @IBOutlet private weak var loginBtn: UIButton!
+    @IBOutlet private var splashView: SplashView!
     
-    // MARK: - Transition Constants
+    // MARK: - Properties
+    private let viewModel: SplashViewModel
     private let transitionDuration: TimeInterval = 0.5
+    
+    // MARK: - Initialization
+    init(viewModel: SplashViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: "SplashViewController", bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        self.viewModel = SplashViewModel()
+        super.init(coder: coder)
+    }
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        setupBindings()
     }
     
     // MARK: - UI Configuration
     private func configureUI() {
-        setupButtons()
+        splashView.configureButtonActions(
+            signupAction: #selector(handleSignupBtnTap),
+            loginAction: #selector(handleLoginBtnTap),
+            target: self
+        )
     }
     
-    private func setupButtons() {
-        [signupBtn, loginBtn].forEach {
-            $0?.layer.cornerRadius = 15
-            $0?.layer.masksToBounds = true
+    // MARK: - Bindings
+    private func setupBindings() {
+        viewModel.onNavigate = { [weak self] destination in
+            self?.navigateTo(destination)
         }
-        
-        signupBtn.addTarget(self, action: #selector(handleSignupBtnTap), for: .touchUpInside)
-        loginBtn.addTarget(self, action: #selector(handleLoginBtnTap), for: .touchUpInside)
     }
     
     // MARK: - Navigation
-    private func navigateTo(_ viewController: UIViewController) {
+    private func navigateTo(_ destination: SplashViewModel.NavigationDestination) {
+        let viewController: UIViewController
+        switch destination {
+        case .signup:
+            viewController = SignupViewController(nibName: "SignupViewController", bundle: nil)
+        case .login:
+            viewController = LoginViewController(nibName: "LoginViewController", bundle: nil)
+        }
+        
         if let navController = navigationController {
             addFadeTransition(to: navController.view.layer)
             navController.pushViewController(viewController, animated: false)
@@ -62,19 +84,17 @@ class SplashViewController: UIViewController {
             transition.duration = transitionDuration
             view.window?.layer.add(transition, forKey: kCATransition)
         } else {
-            // Fallback for earlier iOS versions
             addFadeTransition(to: view.window?.layer ?? view.layer)
         }
     }
     
     // MARK: - Button Actions
     @objc private func handleSignupBtnTap() {
-        let signupVC = SignupViewController(nibName: "SignupViewController", bundle: nil)
-        navigateTo(signupVC)
+        viewModel.handleSignupAction()
     }
     
     @objc private func handleLoginBtnTap() {
-        let loginVC = LoginViewController(nibName: "LoginViewController", bundle: nil)
-        navigateTo(loginVC)
+        viewModel.handleLoginAction()
     }
+    
 }

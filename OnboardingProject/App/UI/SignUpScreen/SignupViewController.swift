@@ -40,9 +40,8 @@ class SignupViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let message):
-                    let alert = UIAlertController(title: "Success", message: message, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default))
-                    self?.present(alert, animated: true)
+                    let getInfoVC = GetInfoViewController(nibName: "GetInfoViewController", bundle: nil)
+                    self?.navigationController?.pushViewController(getInfoVC, animated: true)
                 case .failure(let error):
                     let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .default))

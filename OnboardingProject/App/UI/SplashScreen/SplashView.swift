@@ -10,13 +10,11 @@ import UIKit
 class SplashView: UIView {
     
     // MARK: - Outlets
-
     @IBOutlet weak var btnSignup: UIButton!
     @IBOutlet weak var btnLogin: UIButton!
     @IBOutlet weak var lblBtnsTitle: UILabel!
     
     // MARK: - Lifecycle
-
     override func awakeFromNib() {
         super.awakeFromNib()
         setupView()
@@ -24,15 +22,19 @@ class SplashView: UIView {
     }
     
     // MARK: - Setup Methods
-
     func setupView() {
-        btnSignup.setupButton()
-        btnLogin.setupButton()
+        btnSignup?.setupButton()
+        btnLogin?.setupButton()
     }
     
     func setBtnsTitleText() {
-        lblBtnsTitle.text = "Get instant updates from a fully energetic community"
+        lblBtnsTitle.text = LocalizedStrings.splashButtonTitle
+    }
+    
+    // MARK: - Configuration
+    func configureButtonActions(signupAction: Selector, loginAction: Selector, target: Any) {
+        btnSignup.addTarget(target, action: signupAction, for: .touchUpInside)
+        btnLogin.addTarget(target, action: loginAction, for: .touchUpInside)
     }
     
 }
-

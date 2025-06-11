@@ -4,7 +4,6 @@
 //
 //  Created by BrainX iOS Dev on 16/05/2025.
 //
-
 import UIKit
 
 // MARK: - Delegate Protocol
@@ -36,72 +35,41 @@ class SignupView: UIView {
     var password: String? { passwordTextField.text }
     var confirmPassword: String? { confirmPasswordTextField.text }
     
-    // MARK: - Constants
-    private enum UIConstants {
-        static let cornerRadius: CGFloat = 20
-        static let borderWidth: CGFloat = 2
-        static let containerWidth: CGFloat = 40
-        static let eyeButtonSize: CGFloat = 30
-        static let eyeButtonOffset: CGFloat = 5
-    }
-    
     // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
-        setupUI()
+        setupUIElements()
     }
     
     // MARK: - UI Setup
-    private func setupUI() {
-        addPasswordToggle(to: passwordTextField, isVisible: isPasswordVisible, selector: #selector(togglePasswordVisibility))
-        addPasswordToggle(to: confirmPasswordTextField, isVisible: isConfirmPasswordVisible, selector: #selector(toggleConfirmPasswordVisibility))
+    private func setupUIElements() {
+        passwordTextField.addPasswordToggle(
+            isVisible: isPasswordVisible,
+            target: self,
+            action: #selector(togglePasswordVisibility)
+        )
         
-        let buttons: [UIButton?] = [googleSignupBtn, appleSignupBtn]
-        buttons.forEach { button in
-            guard let button = button else { return }
-            button.layer.cornerRadius = UIConstants.cornerRadius
-            button.layer.borderWidth = UIConstants.borderWidth
-            button.layer.borderColor = UIColor.lightGray.cgColor
-            button.layer.masksToBounds = true
-        }
-    }
-    
-    // MARK: - Password Toggle Icon Setup
-    private func addPasswordToggle(to textField: UITextField, isVisible: Bool, selector: Selector) {
-        let eyeButton = UIButton(type: .custom)
-        let imageName = isVisible ? "eye" : "eye.slash"
-        eyeButton.setImage(UIImage(systemName: imageName), for: .normal)
-        eyeButton.tintColor = .gray
-        eyeButton.frame = CGRect(x: 0, y: 0, width: UIConstants.eyeButtonSize, height: UIConstants.eyeButtonSize)
-        eyeButton.contentMode = .scaleAspectFit
-        eyeButton.addTarget(self, action: selector, for: .touchUpInside)
+        confirmPasswordTextField.addPasswordToggle(
+            isVisible: isConfirmPasswordVisible,
+            target: self,
+            action: #selector(toggleConfirmPasswordVisibility)
+        )
         
-        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: UIConstants.containerWidth, height: UIConstants.eyeButtonSize))
-        eyeButton.center = CGPoint(x: UIConstants.containerWidth / 2 - UIConstants.eyeButtonOffset, y: UIConstants.eyeButtonSize / 2)
-        containerView.addSubview(eyeButton)
-        
-        textField.rightView = containerView
-        textField.rightViewMode = .always
-        textField.isSecureTextEntry = true
+        googleSignupBtn?.setupButton()
+        appleSignupBtn?.setupButton()
     }
     
     // MARK: - Toggle Actions
     @objc private func togglePasswordVisibility() {
         isPasswordVisible.toggle()
         passwordTextField.isSecureTextEntry = !isPasswordVisible
-        guard let container = passwordTextField.rightView,
-              let button = container.subviews.first as? UIButton else { return }
-        let imageName = isPasswordVisible ? "eye" : "eye.slash"
-        button.setImage(UIImage(systemName: imageName), for: .normal)
+        passwordTextField.updateEyeIcon(isVisible: isPasswordVisible)
     }
     
     @objc private func toggleConfirmPasswordVisibility() {
         isConfirmPasswordVisible.toggle()
         confirmPasswordTextField.isSecureTextEntry = !isConfirmPasswordVisible
-        guard let container = confirmPasswordTextField.rightView,
-              let button = container.subviews.first as? UIButton else { return }
-        let imageName = isConfirmPasswordVisible ? "eye" : "eye.slash"
-        button.setImage(UIImage(systemName: imageName), for: .normal)
+        confirmPasswordTextField.updateEyeIcon(isVisible: isConfirmPasswordVisible)
     }
     
     // MARK: - Actions
@@ -121,6 +89,7 @@ class SignupView: UIView {
         passwordTextField.delegate = self
         confirmPasswordTextField.delegate = self
     }
+    
 }
 
 // MARK: - UITextFieldDelegate
@@ -134,3 +103,4 @@ extension SignupView: UITextFieldDelegate {
     }
     
 }
+

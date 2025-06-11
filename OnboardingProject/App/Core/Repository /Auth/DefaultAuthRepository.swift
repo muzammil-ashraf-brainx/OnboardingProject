@@ -1,65 +1,9 @@
-//import Foundation
 //
-//class DefaultAuthRepository: AuthRepository {
-//    func signup(signupRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void) {
-//        
-//        guard let url = URL(string: "https://enpak-dev.brainxdemo.com/api/v1/auth/signup") else {
-//            let error = NSError(domain: "Invalid URL", code: -1)
-//            completion(.failure(error))
-//            return
-//        }
+//  DefaultAuthRepository.swift
+//  OnboardingProject
 //
-//        var urlRequest = URLRequest(url: url)
-//        urlRequest.httpMethod = "POST"
-//        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//        
-//        let hardcodedData = [
-//            "username": "muzaa",
-//            "email": "muzaa@mailinator.com",
-//            "password": "12345678",
-//            "confirmPassword": "12345678"
-//        ]
-//        
-//        do { // try all use cases with or without optional
-//            let jsonData = try JSONSerialization.data(withJSONObject: hardcodedData, options: []) // why we do that
-//            urlRequest.httpBody = jsonData
-//        } catch {
-//            completion(.failure(error)) // from where this error is coming?
-//            return
-//        }
+//  Created by BrainX iOS Dev on 16/05/2025.
 //
-//        // how URL session works
-//        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-//                    if let error = error {
-//                        completion(.failure(error))
-//                        return
-//                    }
-//            
-//            if let response = response as? HTTPURLResponse {
-//                print("Status code: \(response.statusCode)")
-//            }
-//            
-//            if let data = data,
-//               let dataString = String(data: data, encoding: .utf8) { //How this syntax working
-//                print("Response data string: \(dataString)")
-//            }
-//
-//            guard let data = data else {
-//                completion(.failure(NSError(domain: "No data", code: -1))) // why passing -1 in code
-//                return
-//            }
-//
-//            do {
-//                let decoded = try JSONDecoder().decode(SignupResponse.self, from: data) // why decoding? and what is the mean or purpose of  "SignupResponse.self"
-//                completion(.success(decoded))
-//            } catch {
-//                completion(.failure(error))
-//            }
-//        }.resume() // what is the purpose of resume?
-//    }
-//}
-//
-
 
 import Foundation
 
@@ -85,10 +29,17 @@ class DefaultAuthRepository: AuthRepository {
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        // Convert request params to JSON data
+        //        let hardcodedData = [
+        //            "username": "muzasdssdsa",
+        //            "email": "muzaddewefdsa@mailinator.com",
+        //            "password": "12345678",
+        //            "confirmPassword": "12345678"
+        //        ]
+        
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: signupRequestParams, options: [])
             urlRequest.httpBody = jsonData
+            print("MARK: Request JSON Body: \(String(data: jsonData, encoding: .utf8) ?? "Invalid JSON")")
         } catch {
             completion(.failure(error))
             return
@@ -98,23 +49,31 @@ class DefaultAuthRepository: AuthRepository {
         
         URLSession.shared.dataTask(with: urlRequest) { data, response, error in
             
+            // Handle connection-level error
             if let error = error {
                 completion(.failure(error))
                 return
             }
             
-            if let response = response as? HTTPURLResponse {
-                print("Status code: \(response.statusCode)")
+            // Ensure valid HTTP response
+            guard let httpResponse = response as? HTTPURLResponse else {
+                let error = NSError(domain: "Invalid HTTP Response", code: -1)
+                completion(.failure(error))
+                return
             }
             
-            if let data = data,
-               let dataString = String(data: data, encoding: .utf8) {
-                print("Response data string: \(dataString)")
+            print("MARK: Status Code: \(httpResponse.statusCode)")
+            
+            guard (200...299).contains(httpResponse.statusCode) else {
+                let serverMessage = String(data: data ?? Data(), encoding: .utf8) ?? "Unknown server error"
+                let error = NSError(domain: serverMessage, code: httpResponse.statusCode)
+                completion(.failure(error))
+                return
             }
             
             guard let data = data else {
-                let noDataError = NSError(domain: "No data", code: -1)
-                completion(.failure(noDataError))
+                let error = NSError(domain: "No data received", code: -1)
+                completion(.failure(error))
                 return
             }
             
@@ -126,6 +85,9 @@ class DefaultAuthRepository: AuthRepository {
             } catch {
                 completion(.failure(error))
             }
+            
         }.resume()
     }
+    
 }
+

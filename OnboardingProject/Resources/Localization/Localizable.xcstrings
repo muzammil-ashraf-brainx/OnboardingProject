@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Key" : {
+      "extractionState" : "manual"
+    },
     "splash.buttonsTitle" : {
       "extractionState" : "manual",
       "localizations" : {
