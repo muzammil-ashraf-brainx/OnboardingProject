@@ -9,5 +9,6 @@ import Foundation
 
 protocol AuthRepository {
     func signup(signupRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void)
-    
+    func login(loginRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void)
 }
+

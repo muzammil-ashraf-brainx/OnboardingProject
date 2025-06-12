@@ -12,6 +12,7 @@ protocol SignupViewDelegate: AnyObject {
     func didEndEditing(_ textField: UITextField)
     func didTapGoogleSignup()
     func didTapAppleSignup()
+    func didTapLoginNow()
 }
 
 class SignupView: UIView {
@@ -81,6 +82,9 @@ class SignupView: UIView {
         delegate?.didTapAppleSignup()
     }
     
+    @IBAction func loginNowButtonTapped(_ sender: Any) {
+        delegate?.didTapLoginNow()
+    }
     // MARK: - Delegation Setup
     func setupDelegates(_ delegate: SignupViewDelegate) {
         self.delegate = delegate

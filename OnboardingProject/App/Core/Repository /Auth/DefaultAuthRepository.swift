@@ -14,55 +14,60 @@ class DefaultAuthRepository: AuthRepository {
     // MARK: - Signup
     
     func signup(signupRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void) {
-        
-        // MARK: - Prepare URL
-        
-        guard let url = URL(string: "https://enpak-dev.brainxdemo.com/api/v1/auth/signup") else {
-            let error = NSError(domain: "Invalid URL", code: -1)
-            completion(.failure(error))
+        performRequest(
+            endpoint: "signup",
+            requestBody: signupRequestParams,
+            completion: completion
+        )
+    }
+    
+    // MARK: - Login
+    
+    func login(loginRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void) {
+        performRequest(
+            endpoint: "login",
+            requestBody: loginRequestParams,
+            completion: completion
+        )
+    }
+    
+    // MARK: - Shared Request Logic
+    
+    private func performRequest(
+        endpoint: String,
+        requestBody: [String: Any],
+        completion: @escaping (Result<SignupResponse, Error>) -> Void
+    ) {
+        guard let url = URL(string: "https://enpak-dev.brainxdemo.com/api/v1/auth/\(endpoint)") else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1)))
             return
         }
-        
-        // MARK: - Prepare Request
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        //        let hardcodedData = [
-        //            "username": "muzasdssdsa",
-        //            "email": "muzaddewefdsa@mailinator.com",
-        //            "password": "12345678",
-        //            "confirmPassword": "12345678"
-        //        ]
-        
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: signupRequestParams, options: [])
+            let jsonData = try JSONSerialization.data(withJSONObject: requestBody, options: [])
             urlRequest.httpBody = jsonData
-            print("MARK: Request JSON Body: \(String(data: jsonData, encoding: .utf8) ?? "Invalid JSON")")
+            print("MARK: \(endpoint.capitalized) Request Body: \(String(data: jsonData, encoding: .utf8) ?? "")")
         } catch {
             completion(.failure(error))
             return
         }
         
-        // MARK: - Perform Network Call
-        
         URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-            
-            // Handle connection-level error
             if let error = error {
                 completion(.failure(error))
                 return
             }
             
-            // Ensure valid HTTP response
             guard let httpResponse = response as? HTTPURLResponse else {
-                let error = NSError(domain: "Invalid HTTP Response", code: -1)
-                completion(.failure(error))
+                completion(.failure(NSError(domain: "Invalid HTTP Response", code: -1)))
                 return
             }
             
-            print("MARK: Status Code: \(httpResponse.statusCode)")
+            print("MARK: \(endpoint.capitalized) Status Code: \(httpResponse.statusCode)")
             
             guard (200...299).contains(httpResponse.statusCode) else {
                 let serverMessage = String(data: data ?? Data(), encoding: .utf8) ?? "Unknown server error"
@@ -72,12 +77,9 @@ class DefaultAuthRepository: AuthRepository {
             }
             
             guard let data = data else {
-                let error = NSError(domain: "No data received", code: -1)
-                completion(.failure(error))
+                completion(.failure(NSError(domain: "No data received", code: -1)))
                 return
             }
-            
-            // MARK: - Decode Response
             
             do {
                 let decoded = try JSONDecoder().decode(SignupResponse.self, from: data)
@@ -88,6 +90,5 @@ class DefaultAuthRepository: AuthRepository {
             
         }.resume()
     }
-    
 }
 

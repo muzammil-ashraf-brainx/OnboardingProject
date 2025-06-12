@@ -97,10 +97,16 @@ class SignupViewController: UIViewController {
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
+    
 }
 
 // MARK: - SignupViewDelegate
 extension SignupViewController: SignupViewDelegate {
+    func didTapLoginNow() {
+        let loginVC = LoginViewController(nibName: "LoginViewController", bundle: nil)
+        navigationController?.pushViewController(loginVC, animated: true)
+    }
+    
     func didBeginEditing(_ textField: UITextField) {
         activeField = textField
     }

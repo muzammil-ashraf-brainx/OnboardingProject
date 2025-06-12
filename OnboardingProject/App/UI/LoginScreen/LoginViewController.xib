@@ -11,11 +11,13 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginViewController" customModule="OnboardingProject" customModuleProvider="target">
             <connections>
+                <outlet property="formContainerView" destination="XiI-Jm-54s" id="qtd-54-0cp"/>
+                <outlet property="loginView" destination="i5M-Pr-FkT" id="7Ra-9X-ApU"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT" customClass="LoginView" customModule="OnboardingProject" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -62,6 +64,9 @@
                             <color key="tintColor" red="0.4716828465461731" green="0.36443248391151428" blue="0.10020814090967178" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <buttonConfiguration key="configuration" style="plain" title="Forget Password?"/>
+                            <connections>
+                                <action selector="forgetPasswordTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="xBK-xL-IY4"/>
+                            </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E0A-Mp-4l5">
                             <rect key="frame" x="16" y="197.66666666666663" width="361" height="57"/>
@@ -70,8 +75,43 @@
                                 <constraint firstAttribute="height" constant="57" id="lPe-Uc-m5M"/>
                             </constraints>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                            <state key="normal" title="Button"/>
+                            <state key="normal" title="Login"/>
+                            <connections>
+                                <action selector="loginButtonTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="EpI-cN-sZ4"/>
+                            </connections>
                         </button>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="Vtk-3S-o9u">
+                            <rect key="frame" x="66.666666666666686" y="304" width="260" height="16"/>
+                            <subviews>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Don`t have an account?" placeholder="Don`t have an account?" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="q9k-q8-bFs">
+                                    <rect key="frame" x="0.0" y="0.0" width="149" height="16"/>
+                                    <color key="tintColor" red="0.4716828465461731" green="0.36443248391151428" blue="0.10020814090967178" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="16" id="ZWG-VO-TJw"/>
+                                    </constraints>
+                                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XdH-rd-k2H">
+                                    <rect key="frame" x="149" y="0.0" width="111" height="16"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="16" id="Jwf-aV-wn8"/>
+                                    </constraints>
+                                    <color key="tintColor" red="0.4716828465461731" green="0.36443248391151428" blue="0.10020814090967178" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Create now"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Create now"/>
+                                    <connections>
+                                        <action selector="createAccountButtonTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="aso-pB-Jp2"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="260" id="9LK-bV-R7v"/>
+                                <constraint firstAttribute="height" constant="16" id="v9W-RV-r6w"/>
+                            </constraints>
+                        </stackView>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
@@ -84,9 +124,11 @@
                         <constraint firstItem="E0A-Mp-4l5" firstAttribute="top" secondItem="nZl-qj-5HS" secondAttribute="bottom" constant="24" id="Vaa-OF-ohh"/>
                         <constraint firstAttribute="trailing" secondItem="E0A-Mp-4l5" secondAttribute="trailing" constant="16" id="YnK-Hn-2QW"/>
                         <constraint firstItem="E0A-Mp-4l5" firstAttribute="leading" secondItem="XiI-Jm-54s" secondAttribute="leading" constant="16" id="ZCf-YD-dH4"/>
+                        <constraint firstAttribute="bottom" secondItem="Vtk-3S-o9u" secondAttribute="bottom" constant="30" id="gxU-MB-6ET"/>
                         <constraint firstItem="Ia3-s3-w3s" firstAttribute="leading" secondItem="XiI-Jm-54s" secondAttribute="leading" constant="16" id="j2c-nK-Uxs"/>
                         <constraint firstAttribute="height" constant="350" id="kP5-f7-2kY"/>
                         <constraint firstItem="nZl-qj-5HS" firstAttribute="top" secondItem="nHB-xN-vtf" secondAttribute="bottom" constant="8" id="rU7-10-Osn"/>
+                        <constraint firstItem="Vtk-3S-o9u" firstAttribute="centerX" secondItem="XiI-Jm-54s" secondAttribute="centerX" id="ze3-MS-ZDC"/>
                     </constraints>
                 </view>
             </subviews>
@@ -96,13 +138,22 @@
                 <constraint firstAttribute="bottom" secondItem="XiI-Jm-54s" secondAttribute="bottom" id="4MV-Hp-ekZ"/>
                 <constraint firstItem="0Q2-ab-wVT" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="16" id="5vL-BB-k5w"/>
                 <constraint firstItem="XiI-Jm-54s" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="BOY-Na-bbA"/>
+                <constraint firstItem="XiI-Jm-54s" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Hvx-bk-JkA"/>
                 <constraint firstItem="nHg-7q-Yoe" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="SXE-pU-kKZ"/>
+                <constraint firstAttribute="trailing" secondItem="XiI-Jm-54s" secondAttribute="trailing" id="Tzl-sX-aRL"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="XiI-Jm-54s" secondAttribute="trailing" id="Vyk-XQ-BQv"/>
                 <constraint firstItem="nHg-7q-Yoe" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="blt-uD-H5d"/>
                 <constraint firstAttribute="bottom" secondItem="nHg-7q-Yoe" secondAttribute="bottom" id="dKf-eU-bAh"/>
                 <constraint firstItem="0Q2-ab-wVT" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="dwW-Xr-3jv"/>
                 <constraint firstAttribute="trailing" secondItem="nHg-7q-Yoe" secondAttribute="trailing" id="n2Z-Rq-YG1"/>
+                <constraint firstAttribute="bottom" secondItem="XiI-Jm-54s" secondAttribute="bottom" id="pEP-nf-VqL"/>
             </constraints>
+            <connections>
+                <outlet property="forgetPasswordButton" destination="nZl-qj-5HS" id="MVZ-TE-6Ha"/>
+                <outlet property="loginButton" destination="E0A-Mp-4l5" id="6xd-6G-i8N"/>
+                <outlet property="passwordTextField" destination="nHB-xN-vtf" id="wdC-yW-Cg3"/>
+                <outlet property="usernameTextField" destination="wrj-Bo-Kxu" id="MCW-Mb-JUc"/>
+            </connections>
             <point key="canvasLocation" x="46.564885496183201" y="19.718309859154932"/>
         </view>
     </objects>

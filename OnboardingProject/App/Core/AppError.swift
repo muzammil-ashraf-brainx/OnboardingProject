@@ -14,6 +14,7 @@ enum AppError: LocalizedError {
     case passwordsDoNotMatch
     case emailAlreadyExists
     case usernameAlreadyExists
+    case invalidCredentials
     case backend(message: String)
     
     var errorDescription: String? {
@@ -30,9 +31,11 @@ enum AppError: LocalizedError {
             return "An account with this email already exists. Please use a different email."
         case .usernameAlreadyExists:
             return "This username is already taken. Please choose another one."
+        case .invalidCredentials:
+            return "Invalid email or password. Please try again."
         case .backend(let message):
             return message
         }
     }
-    
 }
+
