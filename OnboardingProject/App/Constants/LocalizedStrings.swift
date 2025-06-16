@@ -10,7 +10,6 @@ import Foundation
 struct LocalizedStrings {
     
     // MARK: - Splash Screen
-    
     static var splashButtonTitle: String {
         String(localized: "splash.buttonsTitle")
     }
@@ -23,6 +22,18 @@ struct LocalizedStrings {
         String(localized: "splash.login")
     }
     
+    // MARK: - GetInfoScreen
+        static var getInfoHeader: String {
+            String(localized: "getInfo.header")
+        }
+
+        static var getInfoDOB: String {
+            String(localized: "getInfo.dob")
+        }
+
+        static var getInfoNext: String {
+            String(localized: "getInfo.next")
+        }
     
     
 }

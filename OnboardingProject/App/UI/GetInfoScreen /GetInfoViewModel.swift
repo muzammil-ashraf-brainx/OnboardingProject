@@ -6,3 +6,18 @@
 //
 
 import Foundation
+
+class GetInfoViewModel {
+    
+    // MARK: - Properties
+    
+    var sections: [[String]] = GetInfoSectionData.sections
+    var selectedIndices: [Int?] = GetInfoSectionData.initialSelectedIndices
+    var selectedDOB: Date?
+    
+    var isValid: Bool {
+        return selectedIndices.allSatisfy { $0 != nil } && selectedDOB != nil
+    }
+    
+}
+

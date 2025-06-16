@@ -7,23 +7,51 @@
 
 import UIKit
 
-class GetInfoViewController: UIViewController {
+// MARK: - GetInfoViewController
 
+class GetInfoViewController: UIViewController {
+    
+    // MARK: - Outlets
+    
+    @IBOutlet weak var getInfoView: GetInfoView!
+    
+    // MARK: - Properties
+    
+    private let viewModel = GetInfoViewModel()
+    
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        setupView()
     }
-
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    // MARK: - Private Methods
+    
+    private func setupView() {
+        getInfoView.delegate = self
+        getInfoView.configure(sections: viewModel.sections, selectedIndices: viewModel.selectedIndices)
     }
-    */
-
 }
+
+// MARK: - GetInfoViewDelegate
+
+extension GetInfoViewController: GetInfoViewDelegate {
+    
+    func didTapNext() {
+        if viewModel.isValid {
+        } else {
+        }
+    }
+    
+    func didSelectDOB(_ date: Date) {
+        viewModel.selectedDOB = date
+    }
+    
+    func didUpdateSelection(section: Int, index: Int?) {
+        viewModel.selectedIndices[section] = index
+        getInfoView.updateSelection(section: section, index: index)
+    }
+    
+}
+
