@@ -1,27 +1,28 @@
 //
-//  LoginViewController.swift
+//  ResetPasswordViewController.swift
 //  OnboardingProject
 //
-//  Created by BrainX iOS Dev on 10/06/2025.
+//  Created by BrainX iOS Dev on 16/06/2025.
 //
 
 import UIKit
 
-class LoginViewController: UIViewController {
+class ResetPasswordViewController: UIViewController {
     
     // MARK: - Outlets
-    @IBOutlet private weak var loginView: LoginView!
-    @IBOutlet private weak var formContainerView: UIView!
+    @IBOutlet weak var ProceedButtonView: UIView!
+    @IBOutlet var resetPasswordView: ResetPasswordView!
     
     // MARK: - Properties
-    private let viewModel = LoginViewModel()
+    private let viewModel = ResetPasswordViewModel()
     
-    // MARK: - Lifecycle
+    // MARK: - LifeCycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        loginView.delegate = self
+        resetPasswordView.delegate = self
         registerForKeyboardNotifications()
         setupDismissKeyboardGesture()
+        
     }
     
     deinit {
@@ -55,7 +56,7 @@ class LoginViewController: UIViewController {
         let animationOptions = UIView.AnimationOptions(rawValue: animationCurve << 16)
         
         UIView.animate(withDuration: animationDuration, delay: 0, options: [animationOptions, .beginFromCurrentState]) {
-            self.formContainerView.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight + self.view.safeAreaInsets.bottom)
+            self.ProceedButtonView.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight + self.view.safeAreaInsets.bottom)
         }
     }
     
@@ -68,7 +69,7 @@ class LoginViewController: UIViewController {
         let animationOptions = UIView.AnimationOptions(rawValue: animationCurve << 16)
         
         UIView.animate(withDuration: animationDuration, delay: 0, options: [animationOptions, .beginFromCurrentState]) {
-            self.formContainerView.transform = .identity
+            self.ProceedButtonView.transform = .identity
         }
     }
     
@@ -83,31 +84,42 @@ class LoginViewController: UIViewController {
         view.endEditing(true)
     }
     
-}
-
-// MARK: - LoginViewDelegate
-extension LoginViewController: LoginViewDelegate {
-    func didTapCreateAccount() {
-        let signupVC = SignupViewController(nibName: "SignupViewController", bundle: nil)
-        navigationController?.pushViewController(signupVC, animated: true)
+    // MARK: - Show Custom Alert
+    private func showOtpSentAlert(email: String) {
+        let alertView = OtpSentAlert.instantiate()
+        alertView.frame = view.bounds
+        alertView.configure(withEmail: email)
+        
+        alertView.onOk = { [weak self] in
+            guard let self = self else { return }
+            
+            let otpVC = OtpVerificationViewController(
+                nibName: "OtpVerificationViewController",
+                bundle: nil
+            )
+            
+            otpVC.userEmail = email 
+            self.navigationController?.pushViewController(otpVC, animated: true)
+        }
+        
+        view.addSubview(alertView)
     }
     
-    func didTapLogin() {
-        viewModel.login(
-            username: loginView.username,
-            password: loginView.password
-        ) { [weak self] result in
+}
+
+// MARK: - Delegate
+extension ResetPasswordViewController: ResetPasswordViewDelegate {
+    func didTapResetPasswordProceedButton() {
+        guard let email = resetPasswordView.registeredEmail else { return }
+        
+        viewModel.resetPassword(email: email) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    let getInfoVC = GetInfoViewController(nibName: "GetInfoViewController", bundle: nil)
-                    self?.navigationController?.pushViewController(getInfoVC, animated: true)
+                    self?.showOtpSentAlert(email: email)
+                    
                 case .failure(let error):
-                    let alert = UIAlertController(
-                        title: "Login Failed",
-                        message: error.localizedDescription,
-                        preferredStyle: .alert
-                    )
+                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self?.present(alert, animated: true)
                 }
@@ -115,9 +127,5 @@ extension LoginViewController: LoginViewDelegate {
         }
     }
     
-    func didTapForgetPassword() {
-        let resetPasswordVC = ResetPasswordViewController(nibName: "ResetPasswordViewController", bundle: nil)
-        navigationController?.pushViewController(resetPasswordVC, animated: true)
-    }
-    
 }
+

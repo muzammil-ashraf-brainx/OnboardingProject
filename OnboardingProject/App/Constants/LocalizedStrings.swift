@@ -35,5 +35,25 @@ struct LocalizedStrings {
             String(localized: "getInfo.next")
         }
     
-    
+    // MARK: - OTP Verification
+    static var otpStepIndicator: String {
+        String(localized: "otp.stepIndicator")
+    }
+
+    static var otpInstruction: String {
+        String(localized: "otp.instruction")
+    }
+
+    static var otpDidNotReceive: String {
+        String(localized: "otp.didNotReceive")
+    }
+
+    static var otpResend: String {
+        String(localized: "otp.resend")
+    }
+
+    static var otpVerify: String {
+        String(localized: "otp.verify")
+    }
+
 }

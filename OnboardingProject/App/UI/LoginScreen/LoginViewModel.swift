@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - LoginViewModel
 
-final class LoginViewModel {
+class LoginViewModel {
     
     // MARK: - Properties
     private let authRepo: AuthRepository
@@ -69,5 +69,6 @@ final class LoginViewModel {
             }
         }
     }
+    
 }
 

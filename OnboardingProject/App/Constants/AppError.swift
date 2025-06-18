@@ -16,7 +16,7 @@ enum AppError: LocalizedError {
     case usernameAlreadyExists
     case invalidCredentials
     case backend(message: String)
-    
+
     var errorDescription: String? {
         switch self {
         case .emptyField(let fieldName):
@@ -37,6 +37,4 @@ enum AppError: LocalizedError {
             return message
         }
     }
-    
 }
-

@@ -10,6 +10,13 @@ import Foundation
 // MARK: - DefaultAuthRepository
 
 class DefaultAuthRepository: AuthRepository {
+    func verifyOtp(otpParams: [String : Any], completion: @escaping (Result<SignupResponse, Error>) -> Void) {
+        performRequest(
+            endpoint: "verify_otp",
+            requestBody: otpParams,
+            completion: completion
+        )    }
+    
     
     // MARK: - Signup
     
@@ -20,6 +27,16 @@ class DefaultAuthRepository: AuthRepository {
             completion: completion
         )
     }
+    
+    // MARK: - Forget-Password
+    func resetPassword(resetParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void) {
+        performRequest(
+            endpoint: "forgot_password",
+            requestBody: resetParams,
+            completion: completion
+        )
+    }
+
     
     // MARK: - Login
     
