@@ -12,17 +12,14 @@ import Foundation
 class SignupViewModel {
     
     // MARK: - Properties
-    
     private let authRepo: AuthRepository
     
     // MARK: - Init
-    
     init(authRepo: AuthRepository = DefaultAuthRepository()) {
         self.authRepo = authRepo
     }
     
     // MARK: - Signup Logic
-    
     func signup(
         email: String?,
         username: String?,
@@ -36,9 +33,8 @@ class SignupViewModel {
         let trimmedConfirmPassword = confirmPassword ?? ""
         
         // MARK: - Validation
-        
         if trimmedEmail.isEmpty {
-            completion(.failure(.emptyField(fieldName: "Email")))
+            completion(.failure(.emptyField(fieldName: AppStrings.FieldName.email)))
             return
         }
         
@@ -48,12 +44,12 @@ class SignupViewModel {
         }
         
         if trimmedUsername.isEmpty {
-            completion(.failure(.emptyField(fieldName: "Username")))
+            completion(.failure(.emptyField(fieldName: AppStrings.FieldName.username)))
             return
         }
         
         if trimmedPassword.isEmpty {
-            completion(.failure(.emptyField(fieldName: "Password")))
+            completion(.failure(.emptyField(fieldName: AppStrings.FieldName.password)))
             return
         }
         
@@ -74,35 +70,30 @@ class SignupViewModel {
             "confirmPassword": trimmedConfirmPassword
         ]
         
-        print("Signup Params Being Sent From ViewModel: \(signupRequestParams)")
-        
         // MARK: - Call Auth Repo
-        
         authRepo.signup(signupRequestParams: signupRequestParams) { result in
             switch result {
             case .success(let response):
                 let usernameFromResponse = response.data?.user?.username ?? trimmedUsername
-                completion(.success("Signup successful. Welcome, \(usernameFromResponse)."))
+                completion(.success("\(AppStrings.Validation.signupSuccess), \(usernameFromResponse)."))
+                
             case .failure(let error):
                 let message = error.localizedDescription.lowercased()
                 
-                if message.contains("email already exists") {
+                if message.contains(AppStrings.Validation.emailExists) {
                     completion(.failure(.emailAlreadyExists))
-                } else if message.contains("username already exists") {
+                } else if message.contains(AppStrings.Validation.usernameExists) {
                     completion(.failure(.usernameAlreadyExists))
                 } else {
-                    completion(.failure(.backend(message: "Something went wrong. Please try again.")))
+                    completion(.failure(.backend(message: AppStrings.Validation.genericError)))
                 }
-                
             }
         }
     }
     
     // MARK: - Email Format Validator
-    
     private func isValidEmail(_ email: String) -> Bool {
-        let regex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: email)
+        return NSPredicate(format: "SELF MATCHES %@", AppRegex.email).evaluate(with: email)
     }
     
 }

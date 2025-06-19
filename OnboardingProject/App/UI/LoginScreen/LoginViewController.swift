@@ -87,8 +87,9 @@ class LoginViewController: UIViewController {
 
 // MARK: - LoginViewDelegate
 extension LoginViewController: LoginViewDelegate {
+    
     func didTapCreateAccount() {
-        let signupVC = SignupViewController(nibName: "SignupViewController", bundle: nil)
+        let signupVC: SignupViewController = .instantiate()
         navigationController?.pushViewController(signupVC, animated: true)
     }
     
@@ -100,15 +101,15 @@ extension LoginViewController: LoginViewDelegate {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    let getInfoVC = GetInfoViewController(nibName: "GetInfoViewController", bundle: nil)
+                    let getInfoVC: GetInfoViewController = .instantiate()
                     self?.navigationController?.pushViewController(getInfoVC, animated: true)
                 case .failure(let error):
                     let alert = UIAlertController(
-                        title: "Login Failed",
+                        title: AppStrings.AlertTitle.loginFailed,
                         message: error.localizedDescription,
                         preferredStyle: .alert
                     )
-                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    alert.addAction(UIAlertAction(title: AppStrings.AlertButton.ok, style: .default))
                     self?.present(alert, animated: true)
                 }
             }
@@ -117,12 +118,15 @@ extension LoginViewController: LoginViewDelegate {
     
     func didTapForgetPassword() {
         let alert = UIAlertController(
-            title: "Forgot Password",
-            message: "This feature is not implemented yet.",
+            title: AppStrings.AlertTitle.forgotPassword,
+            message: AppStrings.AlertMessage.forgotPassword,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: AppStrings.AlertButton.ok, style: .default))
         present(alert, animated: true)
     }
     
 }
+
+// MARK: - NibLoadableViewController
+extension LoginViewController: NibLoadableViewController {}

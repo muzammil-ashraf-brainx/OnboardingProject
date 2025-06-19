@@ -68,6 +68,7 @@ class LoginView: UIView {
     @IBAction private func forgetPasswordTapped(_ sender: UIButton) {
         delegate?.didTapForgetPassword()
     }
+    
     @IBAction func createAccountButtonTapped(_ sender: Any) {
         delegate?.didTapCreateAccount()
     }

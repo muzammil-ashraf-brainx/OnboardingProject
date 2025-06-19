@@ -20,19 +20,19 @@ enum AppError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .emptyField(let fieldName):
-            return "\(fieldName) is required."
+            return AppErrorMessages.emptyField(fieldName)
         case .invalidEmail:
-            return "Please enter a valid email address."
+            return AppErrorMessages.invalidEmail
         case .passwordTooShort(let minLength):
-            return "Password must be at least \(minLength) characters long."
+            return AppErrorMessages.passwordTooShort(minLength: minLength)
         case .passwordsDoNotMatch:
-            return "Passwords do not match. Please try again."
+            return AppErrorMessages.passwordsDoNotMatch
         case .emailAlreadyExists:
-            return "An account with this email already exists. Please use a different email."
+            return AppErrorMessages.emailAlreadyExists
         case .usernameAlreadyExists:
-            return "This username is already taken. Please choose another one."
+            return AppErrorMessages.usernameAlreadyExists
         case .invalidCredentials:
-            return "Invalid email or password. Please try again."
+            return AppErrorMessages.invalidCredentials
         case .backend(let message):
             return message
         }

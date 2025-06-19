@@ -20,7 +20,7 @@ class SplashViewController: UIViewController {
     // MARK: - Initialization
     init(viewModel: SplashViewModel) {
         self.viewModel = viewModel
-        super.init(nibName: "SplashViewController", bundle: nil)
+        super.init(nibName: String(describing: SplashViewController.self), bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -54,21 +54,31 @@ class SplashViewController: UIViewController {
     // MARK: - Navigation
     private func navigateTo(_ destination: SplashViewModel.NavigationDestination) {
         let viewController: UIViewController
+        
         switch destination {
         case .signup:
-            viewController = SignupViewController(nibName: "SignupViewController", bundle: nil)
+            viewController = SignupViewController.instantiate()
         case .login:
-            viewController = LoginViewController(nibName: "LoginViewController", bundle: nil)
+            viewController = LoginViewController.instantiate()
+        }
+        
+        guard let window = view.window else {
+            presentModally(viewController)
+            return
         }
         
         if let navController = navigationController {
             addFadeTransition(to: navController.view.layer)
             navController.pushViewController(viewController, animated: false)
         } else {
-            viewController.modalPresentationStyle = .fullScreen
-            addFlipTransition()
-            present(viewController, animated: false)
+            presentModally(viewController)
         }
+    }
+    
+    private func presentModally(_ viewController: UIViewController) {
+        viewController.modalPresentationStyle = .fullScreen
+        addFlipTransition()
+        present(viewController, animated: false)
     }
     
     private func addFadeTransition(to layer: CALayer) {
@@ -98,3 +108,4 @@ class SplashViewController: UIViewController {
     }
     
 }
+

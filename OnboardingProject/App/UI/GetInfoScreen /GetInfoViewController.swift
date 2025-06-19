@@ -32,15 +32,28 @@ class GetInfoViewController: UIViewController {
         getInfoView.delegate = self
         getInfoView.configure(sections: viewModel.sections, selectedIndices: viewModel.selectedIndices)
     }
+    
+    private func showValidationAlert() {
+        let alert = UIAlertController(
+            title: "Incomplete Form",
+            message: "Please complete all required fields before proceeding.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
 
 // MARK: - GetInfoViewDelegate
 
 extension GetInfoViewController: GetInfoViewDelegate {
-    
     func didTapNext() {
-        if viewModel.isValid {
-        } else {
+        guard viewModel.isValid else {
+            showValidationAlert()
+            return
         }
     }
     
@@ -55,3 +68,6 @@ extension GetInfoViewController: GetInfoViewDelegate {
     
 }
 
+// MARK: - NibLoadableViewController
+
+extension GetInfoViewController: NibLoadableViewController {}

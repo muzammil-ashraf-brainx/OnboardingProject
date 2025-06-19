@@ -27,11 +27,12 @@ class OptionCell: UICollectionViewCell {
     // MARK: - Configuration
     private func configureAppearance() {
         let unselectedImage = AppIcons.radioUnselected?
-            .withTintColor(AppColors.radioUnselected, renderingMode: .alwaysOriginal)
+            .withTintColor(UIColor(named: "lightGray")!, renderingMode: .alwaysOriginal)
         radioButton.setImage(unselectedImage, for: .normal)
-        
+
         let selectedImage = AppIcons.radioSelected?
-            .withTintColor(AppColors.radioSelected, renderingMode: .alwaysOriginal)
+            .withTintColor(UIColor(named: "radioSelected")!, renderingMode: .alwaysOriginal)
+
         radioButton.setImage(selectedImage, for: .selected)
         
         radioButton.tintColor = .clear

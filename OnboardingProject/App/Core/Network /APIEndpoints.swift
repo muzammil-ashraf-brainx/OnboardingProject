@@ -1,0 +1,17 @@
+//
+//  APIEndpoints.swift
+//  OnboardingProject
+//
+//  Created by BrainX iOS Dev on 19/06/2025.
+//
+
+
+import Foundation
+
+enum APIEndpoints {
+    enum Auth {
+        static let signup = "auth/signup"
+        static let login = "auth/login"
+    }
+
+}

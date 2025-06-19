@@ -39,11 +39,15 @@ class SignupViewController: UIViewController {
         ) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let message):
-                    let getInfoVC = GetInfoViewController(nibName: "GetInfoViewController", bundle: nil)
+                case .success:
+                    let getInfoVC: GetInfoViewController = .instantiate()
                     self?.navigationController?.pushViewController(getInfoVC, animated: true)
                 case .failure(let error):
-                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                    let alert = UIAlertController(
+                        title: "Error",
+                        message: error.localizedDescription,
+                        preferredStyle: .alert
+                    )
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self?.present(alert, animated: true)
                 }
@@ -97,13 +101,13 @@ class SignupViewController: UIViewController {
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
-    
 }
 
 // MARK: - SignupViewDelegate
+
 extension SignupViewController: SignupViewDelegate {
     func didTapLoginNow() {
-        let loginVC = LoginViewController(nibName: "LoginViewController", bundle: nil)
+        let loginVC: LoginViewController = .instantiate()
         navigationController?.pushViewController(loginVC, animated: true)
     }
     
@@ -116,15 +120,28 @@ extension SignupViewController: SignupViewDelegate {
     }
     
     func didTapGoogleSignup() {
-        let alert = UIAlertController(title: "Google Signup", message: "Google signup not implemented yet.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        let alert = UIAlertController(
+            title: AppStrings.AlertTitle.googleSignup,
+            message: AppStrings.AlertMessage.googleSignup,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: AppStrings.AlertButton.ok, style: .default))
         present(alert, animated: true)
     }
-    
+
     func didTapAppleSignup() {
-        let alert = UIAlertController(title: "Apple Signup", message: "Apple signup not implemented yet.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        let alert = UIAlertController(
+            title: AppStrings.AlertTitle.appleSignup,
+            message: AppStrings.AlertMessage.appleSignup,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: AppStrings.AlertButton.ok, style: .default))
         present(alert, animated: true)
     }
+
     
 }
+
+// MARK: - NibLoadableViewController
+
+extension SignupViewController: NibLoadableViewController {}

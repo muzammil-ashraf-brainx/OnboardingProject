@@ -7,38 +7,34 @@
 
 import Foundation
 
-// MARK: - DefaultAuthRepository
-
 class DefaultAuthRepository: AuthRepository {
     
     // MARK: - Signup
-    
     func signup(signupRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void) {
         performRequest(
-            endpoint: "signup",
+            endpoint: APIEndpoints.Auth.signup,
             requestBody: signupRequestParams,
             completion: completion
         )
     }
     
     // MARK: - Login
-    
     func login(loginRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void) {
         performRequest(
-            endpoint: "login",
+            endpoint: APIEndpoints.Auth.login,
             requestBody: loginRequestParams,
             completion: completion
         )
     }
     
     // MARK: - Shared Request Logic
-    
     private func performRequest(
         endpoint: String,
         requestBody: [String: Any],
         completion: @escaping (Result<SignupResponse, Error>) -> Void
     ) {
-        guard let url = URL(string: "https://enpak-dev.brainxdemo.com/api/v1/auth/\(endpoint)") else {
+        let urlString = Environment.baseURL + endpoint
+        guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
             return
         }
@@ -87,8 +83,8 @@ class DefaultAuthRepository: AuthRepository {
             } catch {
                 completion(.failure(error))
             }
-            
         }.resume()
     }
+    
 }
-
+      

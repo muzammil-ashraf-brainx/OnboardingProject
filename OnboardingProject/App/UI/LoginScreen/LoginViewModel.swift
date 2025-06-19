@@ -7,9 +7,8 @@
 
 import Foundation
 
-// MARK: - LoginViewModel
 
-final class LoginViewModel {
+class LoginViewModel {
     
     // MARK: - Properties
     private let authRepo: AuthRepository
@@ -30,12 +29,12 @@ final class LoginViewModel {
         
         // MARK: - Validation
         if trimmedUsername.isEmpty {
-            completion(.failure(.emptyField(fieldName: "Username")))
+            completion(.failure(.emptyField(fieldName: AppStrings.FieldName.username)))
             return
         }
         
         if trimmedPassword.isEmpty {
-            completion(.failure(.emptyField(fieldName: "Password")))
+            completion(.failure(.emptyField(fieldName: AppStrings.FieldName.password)))
             return
         }
         
@@ -49,25 +48,23 @@ final class LoginViewModel {
             "password": trimmedPassword
         ]
         
-        print("Login Params Being Sent From ViewModel: \(loginRequestParams)")
-        
         // MARK: - Call Auth Repo
         authRepo.login(loginRequestParams: loginRequestParams) { result in
             switch result {
             case .success(let response):
                 let usernameFromResponse = response.data?.user?.username ?? trimmedUsername
-                completion(.success("Login successful. Welcome back, \(usernameFromResponse)."))
+                completion(.success("\(AppStrings.Validation.loginSuccess), \(usernameFromResponse)."))
                 
             case .failure(let error):
                 let message = error.localizedDescription.lowercased()
                 
-                if message.contains("invalid username or password") {
+                if message.contains(AppStrings.Validation.invalidCredentials.lowercased()) {
                     completion(.failure(.invalidCredentials))
                 } else {
-                    completion(.failure(.backend(message: "Something went wrong. Please try again.")))
+                    completion(.failure(.backend(message: AppStrings.Validation.genericError)))
                 }
             }
         }
     }
+    
 }
-
