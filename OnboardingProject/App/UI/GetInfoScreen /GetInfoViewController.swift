@@ -35,14 +35,14 @@ class GetInfoViewController: UIViewController {
     
     private func showValidationAlert() {
         let alert = UIAlertController(
-            title: "Incomplete Form",
-            message: "Please complete all required fields before proceeding.",
+            title: AppStrings.AlertTitle.incompleteForm,
+            message: AppStrings.AlertMessage.incompleteForm,
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: AppStrings.AlertButton.ok, style: .default))
         
-        present(alert, animated: true, completion: nil)
+        present(alert, animated: true)
     }
     
 }
