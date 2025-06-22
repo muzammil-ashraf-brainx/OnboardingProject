@@ -9,82 +9,117 @@ import Foundation
 
 class DefaultAuthRepository: AuthRepository {
     
-    // MARK: - Signup
-    func signup(signupRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void) {
-        performRequest(
-            endpoint: APIEndpoints.Auth.signup,
-            requestBody: signupRequestParams,
-            completion: completion
-        )
-    }
-    
-    // MARK: - Login
-    func login(loginRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void) {
-        performRequest(
-            endpoint: APIEndpoints.Auth.login,
-            requestBody: loginRequestParams,
-            completion: completion
-        )
-    }
-    
-    // MARK: - Shared Request Logic
-    private func performRequest(
-        endpoint: String,
-        requestBody: [String: Any],
+    func signup(
+        username: String,
+        email: String,
+        password: String,
+        confirmPassword: String,
         completion: @escaping (Result<SignupResponse, Error>) -> Void
     ) {
-        let urlString = Environment.baseURL + endpoint
-        guard let url = URL(string: urlString) else {
-            completion(.failure(NSError(domain: "Invalid URL", code: -1)))
-            return
-        }
-        
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+        executeRequest(
+            .signup(username: username, email: email, password: password, confirmPassword: confirmPassword),
+            completion: completion
+        )
+    }
+    
+    func login(
+        username: String,
+        password: String,
+        completion: @escaping (Result<SignupResponse, Error>) -> Void
+    ) {
+        executeRequest(
+            .login(username: username, password: password),
+            completion: completion
+        )
+    }
+    
+    private func executeRequest<T: Decodable>(
+        _ requestType: Request,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: requestBody, options: [])
-            urlRequest.httpBody = jsonData
-            print("MARK: \(endpoint.capitalized) Request Body: \(String(data: jsonData, encoding: .utf8) ?? "")")
+            let request = try requestType.getURLRequest()
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    return completion(.failure(error))
+                }
+                
+                guard let data = data else {
+                    return completion(.failure(RequestError.noData))
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse,
+                      (200...299).contains(httpResponse.statusCode) else {
+                    return completion(.failure(APIError(data: data)))
+                }
+                
+                do {
+                    let decoded = try JSONDecoder().decode(T.self, from: data)
+                    completion(.success(decoded))
+                } catch {
+                    completion(.failure(error))
+                }
+                
+            }.resume()
+            
         } catch {
             completion(.failure(error))
-            return
+        }
+    }
+}
+
+extension DefaultAuthRepository {
+    
+    enum Request {
+        case signup(username: String, email: String, password: String, confirmPassword: String)
+        case login(username: String, password: String)
+        
+        var url: URL? {
+            switch self {
+            case .signup:
+                return URL(string: Environment.baseURL + APIEndpoints.Auth.signup)
+            case .login:
+                return URL(string: Environment.baseURL + APIEndpoints.Auth.login)
+            }
         }
         
-        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+        var method: HTTPMethod { .post }
+        
+        var headers: [String: String] {
+            [NetworkHeaders.contentType(): NetworkHeaderValues.json()]
+        }
+        
+        var parameters: [String: Any] {
+            switch self {
+            case let .signup(username, email, password, confirmPassword):
+                return [
+                    "username": username,
+                    "email": email,
+                    "password": password,
+                    "confirmPassword": confirmPassword
+                ]
+            case let .login(username, password):
+                return [
+                    "username": username,
+                    "password": password
+                ]
+            }
+        }
+        
+        func getURLRequest() throws -> URLRequest {
+            guard let url = url else {
+                throw RequestError.invalidURL
             }
             
-            guard let httpResponse = response as? HTTPURLResponse else {
-                completion(.failure(NSError(domain: "Invalid HTTP Response", code: -1)))
-                return
-            }
+            var request = URLRequest(url: url)
+            request.httpMethod = method.rawValue
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
             
-            print("MARK: \(endpoint.capitalized) Status Code: \(httpResponse.statusCode)")
+            headers.forEach { request.setValue($1, forHTTPHeaderField: $0) }
             
-            guard (200...299).contains(httpResponse.statusCode) else {
-                let serverMessage = String(data: data ?? Data(), encoding: .utf8) ?? "Unknown server error"
-                let error = NSError(domain: serverMessage, code: httpResponse.statusCode)
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(NSError(domain: "No data received", code: -1)))
-                return
-            }
-            
-            do {
-                let decoded = try JSONDecoder().decode(SignupResponse.self, from: data)
-                completion(.success(decoded))
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
+            return request
+        }
     }
     
 }
-      

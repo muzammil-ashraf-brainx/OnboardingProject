@@ -20,7 +20,6 @@ class GetInfoView: UIView {
     @IBOutlet private weak var collectionView: UICollectionView!
     @IBOutlet private weak var titleLabel: UILabel!
     
-    // MARK: - Properties
     weak var delegate: GetInfoViewDelegate?
     
     private let dobButton: UIButton = {
@@ -38,11 +37,11 @@ class GetInfoView: UIView {
     private lazy var nextButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(LocalizedStrings.getInfoNext, for: .normal)
-        button.backgroundColor = UIColor(named: "Primary")
+        button.backgroundColor = UIColor(named: AppAssets.primaryAppColor)
         button.setTitleColor(.white, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
-        button.setupButton()
+        button.setupFilledButton()
         return button
     }()
     
@@ -107,7 +106,7 @@ class GetInfoView: UIView {
         collectionView.register(
             UICollectionReusableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: "Header"
+            withReuseIdentifier: AppAssets.getInfoReusableHeader
         )
         
         let layout = UICollectionViewFlowLayout()
@@ -209,7 +208,7 @@ extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
             return UICollectionReusableView()
         }
         
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath)
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: AppAssets.getInfoReusableHeader, for: indexPath)
         header.subviews.forEach { $0.removeFromSuperview() }
         
         let label = UILabel()

@@ -9,25 +9,18 @@ import UIKit
 
 // MARK: - GetInfoViewController
 
-class GetInfoViewController: UIViewController {
-    
-    // MARK: - Outlets
-    
+class GetInfoViewController: SuperViewController {
     @IBOutlet weak var getInfoView: GetInfoView!
-    
-    // MARK: - Properties
     
     private let viewModel = GetInfoViewModel()
     
     // MARK: - Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
     }
     
     // MARK: - Private Methods
-    
     private func setupView() {
         getInfoView.delegate = self
         getInfoView.configure(sections: viewModel.sections, selectedIndices: viewModel.selectedIndices)

@@ -7,8 +7,7 @@
 
 import UIKit
 
-class SignupViewController: UIViewController {
-    
+class SignupViewController: SuperViewController {
     // MARK: - Outlets
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var signupView: SignupView!
@@ -16,13 +15,18 @@ class SignupViewController: UIViewController {
     // MARK: - Properties
     private var activeField: UIView?
     private let viewModel = SignupViewModel()
+    override var shouldHandleKeyboardInternally: Bool { false }
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        signupView.setupDelegates(self)
+        signupView.emailTextField.delegate = self
+        signupView.usernameTextField.delegate = self
+        signupView.passwordTextField.delegate = self
+        signupView.confirmPasswordTextField.delegate = self
         registerForKeyboardNotifications()
         setupDismissKeyboardGesture()
+        bindViewModel()
     }
     
     deinit {
@@ -31,31 +35,23 @@ class SignupViewController: UIViewController {
     
     // MARK: - Actions
     @IBAction func signupBtnTapped(_ sender: Any) {
-        viewModel.signup(
+        if let errorMessage = viewModel.validateSignupFields(
             email: signupView.email,
             username: signupView.username,
             password: signupView.password,
             confirmPassword: signupView.confirmPassword
-        ) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    let getInfoVC: GetInfoViewController = .instantiate()
-                    self?.navigationController?.pushViewController(getInfoVC, animated: true)
-                case .failure(let error):
-                    let alert = UIAlertController(
-                        title: "Error",
-                        message: error.localizedDescription,
-                        preferredStyle: .alert
-                    )
-                    alert.addAction(UIAlertAction(title: "OK", style: .default))
-                    self?.present(alert, animated: true)
-                }
-            }
+        ) {
+            showAlert(title: AppStrings.AlertTitle.validationFailed, message: errorMessage)
+            return
         }
+        
+        viewModel.signup(
+            email: signupView.email!,
+            username: signupView.username!,
+            password: signupView.password!
+        )
     }
     
-    // MARK: - Keyboard Handling
     private func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(
             self,
@@ -92,7 +88,6 @@ class SignupViewController: UIViewController {
         scrollView.verticalScrollIndicatorInsets.bottom = 0
     }
     
-    // MARK: - Dismiss Keyboard
     private func setupDismissKeyboardGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
@@ -101,10 +96,24 @@ class SignupViewController: UIViewController {
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
+    
+    private func bindViewModel() {
+        viewModel.onSignupSuccess = { [weak self] message in
+            let getInfoVC: GetInfoViewController = .instantiate()
+            self?.navigationController?.pushViewController(getInfoVC, animated: true)
+        }
+        
+        viewModel.onSignupFailure = { [weak self] errorMessage in
+            self?.showAlert(
+                title: AppStrings.AlertTitle.signupFailed,
+                message: errorMessage
+            )
+        }
+    }
+    
 }
 
-// MARK: - SignupViewDelegate
-
+// MARK: - Extensions
 extension SignupViewController: SignupViewDelegate {
     func didTapLoginNow() {
         let loginVC: LoginViewController = .instantiate()
@@ -120,6 +129,7 @@ extension SignupViewController: SignupViewDelegate {
     }
     
     func didTapGoogleSignup() {
+        // TODO: Implement Google Sign-In using appropriate SDK
         let alert = UIAlertController(
             title: AppStrings.AlertTitle.googleSignup,
             message: AppStrings.AlertMessage.googleSignup,
@@ -128,8 +138,9 @@ extension SignupViewController: SignupViewDelegate {
         alert.addAction(UIAlertAction(title: AppStrings.AlertButton.ok, style: .default))
         present(alert, animated: true)
     }
-
+    
     func didTapAppleSignup() {
+        // TODO: Implement Apple Sign-In using appropriate SDK
         let alert = UIAlertController(
             title: AppStrings.AlertTitle.appleSignup,
             message: AppStrings.AlertMessage.appleSignup,
@@ -138,10 +149,19 @@ extension SignupViewController: SignupViewDelegate {
         alert.addAction(UIAlertAction(title: AppStrings.AlertButton.ok, style: .default))
         present(alert, animated: true)
     }
-
     
 }
 
-// MARK: - NibLoadableViewController
-
 extension SignupViewController: NibLoadableViewController {}
+
+extension SignupViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeField = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        activeField = nil
+    }
+    
+}
+

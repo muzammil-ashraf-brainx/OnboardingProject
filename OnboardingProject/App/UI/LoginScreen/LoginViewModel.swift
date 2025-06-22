@@ -7,10 +7,14 @@
 
 import Foundation
 
-
 class LoginViewModel {
     
-    // MARK: - Properties
+    // MARK: - Callbacks
+    var onLoginSuccess: (() -> Void)?
+    var onLoginFailure: ((String) -> Void)?
+    var onValidationFailed: ((String) -> Void)?
+    var onForgotPassword: (() -> Void)?
+    
     private let authRepo: AuthRepository
     
     // MARK: - Init
@@ -18,53 +22,60 @@ class LoginViewModel {
         self.authRepo = authRepo
     }
     
-    // MARK: - Login Logic
-    func login(
-        username: String?,
-        password: String?,
-        completion: @escaping (Result<String, AppError>) -> Void
-    ) {
-        let trimmedUsername = username?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let trimmedPassword = password ?? ""
-        
-        // MARK: - Validation
-        if trimmedUsername.isEmpty {
-            completion(.failure(.emptyField(fieldName: AppStrings.FieldName.username)))
+    // MARK: - Public Methods
+    func login(username: String?, password: String?) {
+        guard let username = username,
+              let password = password,
+              !username.isEmpty,
+              !password.isEmpty else {
+            onValidationFailed?(AppStrings.AlertMessage.incompleteForm)
             return
         }
         
-        if trimmedPassword.isEmpty {
-            completion(.failure(.emptyField(fieldName: AppStrings.FieldName.password)))
+        if let validationError = validateCredentials(username: username, password: password) {
+            onValidationFailed?(validationError)
             return
         }
         
-        if trimmedPassword.count < 8 {
-            completion(.failure(.passwordTooShort(minLength: 8)))
-            return
-        }
-        
-        let loginRequestParams: [String: Any] = [
-            "username": trimmedUsername,
-            "password": trimmedPassword
-        ]
-        
-        // MARK: - Call Auth Repo
-        authRepo.login(loginRequestParams: loginRequestParams) { result in
-            switch result {
-            case .success(let response):
-                let usernameFromResponse = response.data?.user?.username ?? trimmedUsername
-                completion(.success("\(AppStrings.Validation.loginSuccess), \(usernameFromResponse)."))
-                
-            case .failure(let error):
-                let message = error.localizedDescription.lowercased()
-                
-                if message.contains(AppStrings.Validation.invalidCredentials.lowercased()) {
-                    completion(.failure(.invalidCredentials))
-                } else {
-                    completion(.failure(.backend(message: AppStrings.Validation.genericError)))
+        authRepo.login(
+            username: username.trimmingCharacters(in: .whitespacesAndNewlines),
+            password: password
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.onLoginSuccess?()
+                case .failure(let error):
+                    print(error)
+                    self?.onLoginFailure?(error.localizedDescription)
                 }
             }
         }
     }
     
+    func triggerForgotPassword() {
+        onForgotPassword?()
+    }
+    
+    // MARK: - Validation
+    private func validateCredentials(username: String?, password: String?) -> String? {
+        let trimmedUsername = username?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmedPassword = password ?? ""
+        
+        if trimmedUsername.isEmpty {
+            return AppStrings.AlertMessage.usernameEmpty
+        }
+        
+        if trimmedPassword.isEmpty {
+            return AppStrings.AlertMessage.passwordEmpty
+        }
+        
+        if trimmedPassword.count < 8 {
+            return AppStrings.AlertMessage.passwordTooShort
+        }
+        
+        return nil
+    }
+    
 }
+

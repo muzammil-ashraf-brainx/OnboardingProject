@@ -23,8 +23,8 @@ class SplashView: UIView {
     
     // MARK: - Setup Methods
     func setupView() {
-        btnSignup?.setupButton()
-        btnLogin?.setupButton()
+        btnSignup?.setupFilledButton()
+        btnLogin?.setupFilledButton()
     }
     
     func setBtnsTitleText() {

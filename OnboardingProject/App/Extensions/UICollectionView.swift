@@ -7,7 +7,6 @@
 import UIKit
 
 extension UICollectionView {
-    
     func registerNib<T: UICollectionViewCell>(for cellType: T.Type) {
         let nib = UINib(nibName: cellType.nibName, bundle: nil)
         register(nib, forCellWithReuseIdentifier: cellType.reuseIdentifier)
@@ -15,7 +14,7 @@ extension UICollectionView {
 
     func dequeueCell<T: UICollectionViewCell>(for indexPath: IndexPath) -> T {
         guard let cell = dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as? T else {
-            fatalError("Couldn't dequeue cell with identifier: \(T.reuseIdentifier)")
+            fatalError("\(AppStrings.Validation.genericError): \(T.reuseIdentifier)")
         }
         return cell
     }

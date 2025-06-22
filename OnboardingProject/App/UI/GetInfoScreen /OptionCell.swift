@@ -14,7 +14,6 @@ class OptionCell: UICollectionViewCell {
     @IBOutlet private weak var label: UILabel!
     @IBOutlet private weak var radioButton: UIButton!
     
-    // MARK: - Properties
     var optionSelected: (() -> Void)?
     
     // MARK: - Lifecycle
@@ -27,12 +26,12 @@ class OptionCell: UICollectionViewCell {
     // MARK: - Configuration
     private func configureAppearance() {
         let unselectedImage = AppIcons.radioUnselected?
-            .withTintColor(UIColor(named: "lightGray")!, renderingMode: .alwaysOriginal)
+            .withTintColor(UIColor(named: AppAssets.radioUnSelectedColor)!, renderingMode: .alwaysOriginal)
         radioButton.setImage(unselectedImage, for: .normal)
-
+        
         let selectedImage = AppIcons.radioSelected?
-            .withTintColor(UIColor(named: "radioSelected")!, renderingMode: .alwaysOriginal)
-
+            .withTintColor(UIColor(named: AppAssets.radioSelectedColor)!, renderingMode: .alwaysOriginal)
+        
         radioButton.setImage(selectedImage, for: .selected)
         
         radioButton.tintColor = .clear
@@ -42,12 +41,10 @@ class OptionCell: UICollectionViewCell {
         radioButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
     }
     
-    // MARK: - Actions
     @objc private func radioButtonTapped() {
         optionSelected?()
     }
     
-    // MARK: - Public Methods
     func configure(with text: String, isSelected: Bool) {
         label.text = text
         radioButton.isHidden = false

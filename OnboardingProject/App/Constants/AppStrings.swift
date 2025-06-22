@@ -37,7 +37,7 @@ enum AppStrings {
         static let success = "Success"
         static let googleSignup = "Google Signup"
         static let appleSignup = "Apple Signup"
-        
+        static let validationFailed = "Credentials Failed"
     }
     
     enum AlertMessage {
@@ -45,7 +45,14 @@ enum AppStrings {
         static let incompleteForm = "Please complete all required fields before proceeding."
         static let googleSignup = "Google signup not implemented yet."
         static let appleSignup = "Apple signup not implemented yet."
-        
+        static let passwordTooShort = "Password must be at least 8 characters long."
+        static let emailEmpty = "Email cannot be empty."
+        static let usernameEmpty = "Username cannot be empty."
+        static let passwordEmpty = "Password cannot be empty."
+        static let passwordDoNotMatch = "Password do not match."
+        static let invalidEmail = "Email is invalid"
+        static let unknownServerError = "Unknown server error"
+
     }
     
     enum AlertButton {

@@ -8,9 +8,6 @@
 import Foundation
 
 class GetInfoViewModel {
-    
-    // MARK: - Properties
-    
     var sections: [[String]] = GetInfoSectionData.sections
     var selectedIndices: [Int?] = GetInfoSectionData.initialSelectedIndices
     var selectedDOB: Date?

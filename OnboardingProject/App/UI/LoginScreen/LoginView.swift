@@ -23,48 +23,33 @@ class LoginView: UIView {
     @IBOutlet private weak var forgetPasswordButton: UIButton!
     @IBOutlet private weak var loginButton: UIButton!
     
-    // MARK: - Properties
     private var isPasswordVisible = false
     weak var delegate: LoginViewDelegate?
     
-    // MARK: - Public Accessors
     var username: String? { usernameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) }
     var password: String? { passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) }
-
+    
     // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
         setupUIElements()
     }
-
+    
     // MARK: - UI Setup
     private func setupUIElements() {
         usernameTextField.autocapitalizationType = .none
         usernameTextField.keyboardType = .emailAddress
-
         passwordTextField.isSecureTextEntry = true
-        passwordTextField.addPasswordToggle(
-            isVisible: isPasswordVisible,
-            target: self,
-            action: #selector(togglePasswordVisibility)
-        )
-        
-        loginButton.setupButton()
+        passwordTextField.configureAsSecureTextField()
+        loginButton.setupFilledButton()
         forgetPasswordButton.setTitleColor(.systemBrown, for: .normal)
     }
-
-    // MARK: - Toggle Password Visibility
-    @objc private func togglePasswordVisibility() {
-        isPasswordVisible.toggle()
-        passwordTextField.isSecureTextEntry = !isPasswordVisible
-        passwordTextField.updateEyeIcon(isVisible: isPasswordVisible)
-    }
-
+    
     // MARK: - Actions
     @IBAction private func loginButtonTapped(_ sender: UIButton) {
         delegate?.didTapLogin()
     }
-
+    
     @IBAction private func forgetPasswordTapped(_ sender: UIButton) {
         delegate?.didTapForgetPassword()
     }
