@@ -84,6 +84,9 @@
                                     <state key="normal" title="Resend">
                                         <color key="titleColor" red="0.4716828465461731" green="0.36443248391151428" blue="0.10020814090967178" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </state>
+                                    <connections>
+                                        <action selector="resendButtonTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="gmp-tK-ozz"/>
+                                    </connections>
                                 </button>
                             </subviews>
                         </stackView>

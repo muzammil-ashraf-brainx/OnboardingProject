@@ -1,52 +1,56 @@
 //
-//  ResetpasswordViewModel.swift
+//  ResetPasswordViewModel.swift
 //  OnboardingProject
 //
-//  Created by BrainX iOS Dev on 16/06/2025.
+//  Created by BrainX iOS Dev on 23/06/2025.
 //
 
 import Foundation
 
 class ResetPasswordViewModel {
-    
-    // MARK: - Properties
     private let authRepo: AuthRepository
+    
+    var onResetSuccess: ((String) -> Void)?
+    var onResetFailure: ((String) -> Void)?
     
     // MARK: - Init
     init(authRepo: AuthRepository = DefaultAuthRepository()) {
         self.authRepo = authRepo
     }
     
-    // MARK: - Reset Logic
-    func resetPassword(
-        email: String?,
-        completion: @escaping (Result<String, AppError>) -> Void
-    ) {
+    // MARK: -  Validate Fields
+    public func validateEmailField(email: String?) -> String? {
         let trimmedEmail = email?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         
-        // Validation
         if trimmedEmail.isEmpty {
-            completion(.failure(.emptyField(fieldName: "Email")))
-            return
+            return AppStrings.AlertMessage.emailEmpty
         }
         
-        if !trimmedEmail.isValidEmail {
-            completion(.failure(.invalidEmail))
-            return
+        if !isValidEmail(trimmedEmail) {
+            return AppStrings.AlertMessage.invalidEmail
         }
         
-        let requestParams: [String: Any] = ["email": trimmedEmail]
+        return nil
+    }
+    
+    private func isValidEmail(_ email: String) -> Bool {
+        return NSPredicate(format: "SELF MATCHES %@", AppRegex.email).evaluate(with: email)
+    }
+    
+    func resetPassword(email: String) {
+        let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        print("Reset Password Params Sent From ViewModel: \(requestParams)")
-        
-        authRepo.resetPassword(resetParams: requestParams) { result in
-            switch result {
-            case .success:
-                completion(.success("Reset link sent to \(trimmedEmail)."))
-            case .failure(let error):
-                completion(.failure(.backend(message: error.localizedDescription)))
+        authRepo.resetPassword(email: trimmedEmail) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.onResetSuccess?(trimmedEmail)
+                case .failure(let error):
+                    self?.onResetFailure?(error.localizedDescription)
+                }
             }
         }
     }
     
 }
+

@@ -5,15 +5,14 @@
 //  Created by BrainX iOS Dev on 17/06/2025.
 //
 
+import UIKit
+
 // MARK: - Delegate Protocol
 protocol OtpVerificationViewDelegate: AnyObject {
     func otpTextDidChange(_ code: String)
     func resendButtonTapped()
     func verifyButtonTapped()
-    
 }
-
-import UIKit
 
 class OtpVerificationView: UIView {
 
@@ -28,32 +27,38 @@ class OtpVerificationView: UIView {
     @IBOutlet weak var resendButton: UIButton!
     @IBOutlet weak var verifyButton: UIButton!
     
+    // MARK: - Properties
     weak var delegate: OtpVerificationViewDelegate?
     
+    private var codeTextFields: [UITextField] {
+        [codeTextField1, codeTextField2, codeTextField3, codeTextField4]
+    }
+    
+    // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
         setupUIElements()
     }
     
+    // MARK: - Setup
     private func setupUIElements() {
         stepLabel.text = LocalizedStrings.otpStepIndicator
         instructionLabel.text = LocalizedStrings.otpInstruction
         resendInfoLabel.text = LocalizedStrings.otpDidNotReceive
-
-        verifyButton.setTitle(LocalizedStrings.otpVerify, for: .normal)
         resendButton.setTitle(LocalizedStrings.otpResend, for: .normal)
-        
-        let textFields = [codeTextField1, codeTextField2, codeTextField3, codeTextField4]
-        for textField in textFields {
-            textField?.keyboardType = .numberPad
-            textField?.textAlignment = .center
-            textField?.layer.borderWidth = 1.0
-            textField?.layer.cornerRadius = 5
-            textField?.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        verifyButton.setTitle(LocalizedStrings.otpVerify, for: .normal)
+        verifyButton.setupFilledButton()
+
+        codeTextFields.forEach {
+            $0.keyboardType = .numberPad
+            $0.textAlignment = .center
+            $0.layer.borderWidth = 1.0
+            $0.layer.cornerRadius = 5
+            $0.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         }
-        verifyButton?.setupButton()
     }
     
+    // MARK: - Text Field Logic
     @objc private func textFieldDidChange(_ textField: UITextField) {
         guard let text = textField.text, text.count == 1 else {
             textField.layer.borderColor = UIColor.lightGray.cgColor
@@ -61,45 +66,35 @@ class OtpVerificationView: UIView {
             return
         }
 
-        textField.layer.borderColor = UIColor(hex: "#745E27")?.cgColor
+        textField.layer.borderColor = UIColor(named: AppAssets.primaryAppColor)?.cgColor
 
-        let textFields = [codeTextField1, codeTextField2, codeTextField3, codeTextField4]
-        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
-            textFields[index + 1]?.becomeFirstResponder()
+        if let index = codeTextFields.firstIndex(of: textField), index < codeTextFields.count - 1 {
+            codeTextFields[index + 1].becomeFirstResponder()
         } else {
             textField.resignFirstResponder()
         }
 
-        let otpCode = textFields.compactMap { $0?.text }.joined()
+        let otpCode = codeTextFields.compactMap { $0.text }.joined()
         delegate?.otpTextDidChange(otpCode)
-
         updateVerifyButtonState()
     }
-
     
     private func updateVerifyButtonState() {
-        let codeFields = [codeTextField1, codeTextField2, codeTextField3, codeTextField4]
-        let isComplete = codeFields.allSatisfy { ($0?.text?.count ?? 0) == 1 }
-
-        if isComplete {
-            verifyButton.backgroundColor = UIColor(hex: "#745E27")
-            verifyButton.isEnabled = true
-        }
-        else {
-                verifyButton.backgroundColor = UIColor.lightGray 
-                verifyButton.isEnabled = false
-            }
+        let isComplete = codeTextFields.allSatisfy { ($0.text?.count ?? 0) == 1 }
+        verifyButton.isEnabled = isComplete
+        verifyButton.backgroundColor = isComplete ?
+            UIColor(named: AppAssets.primaryAppColor) :
+            UIColor.lightGray
     }
 
-    
+    // MARK: - Actions
     @IBAction func resendButtonTapped(_ sender: UIButton) {
         delegate?.resendButtonTapped()
     }
     
     @IBAction func verifyButtonTapped(_ sender: UIButton) {
-        print("Pressed with")
         delegate?.verifyButtonTapped()
     }
+    
 }
-
 

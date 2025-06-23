@@ -30,9 +30,18 @@ class SuperViewController: UIViewController {
     }
     
     // MARK: - Alert Utility
-    func showAlert(title: String, message: String, actionTitle: String = AppStrings.AlertButton.ok) {
+    func showAlert(
+        title: String,
+        message: String,
+        okAction: (() -> Void)? = nil
+    ) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: actionTitle, style: .default))
+        
+        let ok = UIAlertAction(title: AppStrings.AlertButton.ok, style: .default) { _ in
+            okAction?()
+        }
+        
+        alert.addAction(ok)
         present(alert, animated: true)
     }
     

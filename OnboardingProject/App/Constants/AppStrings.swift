@@ -38,6 +38,8 @@ enum AppStrings {
         static let googleSignup = "Google Signup"
         static let appleSignup = "Apple Signup"
         static let validationFailed = "Credentials Failed"
+        static let failed = "Failed to Load "
+        static let verificationFailed = "Verification Failed"
     }
     
     enum AlertMessage {
@@ -52,6 +54,8 @@ enum AppStrings {
         static let passwordDoNotMatch = "Password do not match."
         static let invalidEmail = "Email is invalid"
         static let unknownServerError = "Unknown server error"
+        static let otpVerified = "Otp Verified Successfully"
+        static let enterValidOtp = "Pls enter the valid 4-digit OTP"
 
     }
     

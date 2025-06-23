@@ -47,12 +47,6 @@ class LoginViewController: SuperViewController {
             )
         }
         
-        viewModel.onForgotPassword = { [weak self] in
-            self?.showAlert(
-                title: AppStrings.AlertTitle.forgotPassword,
-                message: AppStrings.AlertMessage.forgotPassword
-            )
-        }
     }
     
     private func navigateToGetInfoScreen() {
@@ -74,8 +68,10 @@ extension LoginViewController: LoginViewDelegate {
     }
     
     func didTapForgetPassword() {
-        viewModel.triggerForgotPassword()
+        let resetPasswordVC: ResetPasswordViewController = .instantiate()
+        navigationController?.pushViewController(resetPasswordVC, animated: true)
     }
+
     
 }
 

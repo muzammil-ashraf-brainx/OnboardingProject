@@ -67,6 +67,17 @@
         }
       }
     },
+    "otp.sentMessage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We have sent a verification code to your email %@. If you don't see it in your inbox, please make sure to also check your junk/spam folder."
+          }
+        }
+      }
+    },
     "otp.stepIndicator" : {
       "extractionState" : "manual",
       "localizations" : {

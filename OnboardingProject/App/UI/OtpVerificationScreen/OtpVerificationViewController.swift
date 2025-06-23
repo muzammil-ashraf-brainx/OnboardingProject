@@ -7,175 +7,99 @@
 
 import UIKit
 
-class OtpVerificationViewController: UIViewController {
+class OtpVerificationViewController: SuperViewController {
 
     // MARK: - Outlets
     @IBOutlet weak var otpVerificationView: OtpVerificationView!
     @IBOutlet weak var verifyButtonView: UIView!
-    
-    // MARK: - Properties
-    private var viewModel = OTPViewModel()
-    public var userEmail = ""
-    
+
+    private var viewModel: OTPViewModel!
+    private var resetURL: String?
+    private var email: String!
+
+    func configure(email: String) {
+        self.email = email
+    }
+
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        registerForKeyboardNotifications()
-        setupDismissKeyboardGesture()
-        setup()
+        viewModel = OTPViewModel(email: email)
         otpVerificationView.delegate = self
+        keyboardResponsiveView = verifyButtonView
+        setupBindings()
     }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    // MARK: - Setup
-    private func setup() {
-        // Configure ViewModel
+
+    // MARK: - ViewModel Bindings
+    private func setupBindings() {
         viewModel.updateUI = { [weak self] in
             DispatchQueue.main.async {
-                self?.updateUI()
+                self?.updateVerifyButtonState()
             }
         }
-        
-        viewModel.onSuccess = { [weak self] in
-            self?.handleOTPVerificationSuccess()
+
+        viewModel.onSuccess = { [weak self] resetURL in
+            DispatchQueue.main.async {
+                self?.resetURL = resetURL
+                self?.showAlert(
+                    title: AppStrings.AlertTitle.success,
+                    message: AppStrings.AlertMessage.otpVerified,
+                    okAction: {
+                        let changePasswordVC: ChangePasswordViewController = .instantiate()
+                        self?.navigationController?.pushViewController(changePasswordVC, animated: true)
+                    }
+                )
+            }
         }
 
         viewModel.onError = { [weak self] errorMessage in
-            self?.showErrorAlert(message: errorMessage)
+            DispatchQueue.main.async {
+                self?.showAlert(
+                    title: AppStrings.AlertTitle.verificationFailed,
+                    message: errorMessage
+                )
+            }
         }
         
-        // Initial UI update
-        updateUI()
+        viewModel.onResendSuccess = { [weak self] in
+            DispatchQueue.main.async {
+                self?.showOtpSentAlert(email: self?.email ?? "")
+            }
+        }
+
+
+        updateVerifyButtonState()
     }
-    
-    private func updateUI() {
+
+    private func updateVerifyButtonState() {
         otpVerificationView.verifyButton.isEnabled = viewModel.isValidOTP
     }
     
-    private func handleOTPVerificationSuccess() {
-        // Proceed to next screen or show success message
-        showSuccessAlert(message: "OTP verified successfully.")
-    }
-    
-    private func showSuccessAlert(message: String) {
-        let alert = UIAlertController(
-            title: "Success",
-            message: message,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
-            // Optional: Navigate to next screen after success
-        })
-        present(alert, animated: true)
-    }
-    
-    private func showErrorAlert(message: String) {
-        let alert = UIAlertController(
-            title: "Verification Failed",
-            message: message,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
-    
-    // MARK: - Keyboard Handling
-    private func registerForKeyboardNotifications() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillShow(_:)),
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillHide(_:)),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
-    }
-    
-    @objc private func keyboardWillShow(_ notification: Notification) {
-        guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-              let animationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double,
-              let animationCurve = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt else {
-            return
+    private func showOtpSentAlert(email: String) {
+        let alertView = OtpSentAlert.instantiate()
+        alertView.frame = view.bounds
+        alertView.configure(withEmail: email)
+        alertView.onOk = {
+            alertView.removeFromSuperview()
         }
-        
-        let keyboardHeight = keyboardFrame.height
-        let animationOptions = UIView.AnimationOptions(rawValue: animationCurve << 16)
-        
-        UIView.animate(withDuration: animationDuration, delay: 0, options: [animationOptions, .beginFromCurrentState]) {
-            self.verifyButtonView.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight + self.view.safeAreaInsets.bottom)
-        }
+        view.addSubview(alertView)
     }
-    
-    @objc private func keyboardWillHide(_ notification: Notification) {
-        guard let animationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double,
-              let animationCurve = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt else {
-            return
-        }
-        
-        let animationOptions = UIView.AnimationOptions(rawValue: animationCurve << 16)
-        
-        UIView.animate(withDuration: animationDuration, delay: 0, options: [animationOptions, .beginFromCurrentState]) {
-            self.verifyButtonView.transform = .identity
-        }
-    }
-    
-    // MARK: - Dismiss Keyboard
-    private func setupDismissKeyboardGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tapGesture.cancelsTouchesInView = false
-        view.addGestureRecognizer(tapGesture)
-    }
-    
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
-    }
+
 }
 
-//MARK: - OtpVerificationViewDelegate
+// MARK: - OtpVerificationViewDelegate
 extension OtpVerificationViewController: OtpVerificationViewDelegate {
     func otpTextDidChange(_ code: String) {
         viewModel.otpCode = code
     }
-    
+
     func resendButtonTapped() {
         viewModel.resendOTP()
     }
-    
-    func verifyButtonTapped() {
-        viewModel.verifyOTP(email: userEmail) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(_):
-                    let alert = UIAlertController(
-                        title: "Success",
-                        message: "OTP verified successfully.",
-                        preferredStyle: .alert
-                    )
-                    alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
-                        
-                        let changePasswordVC = ChangePasswordViewController()
-                        self?.navigationController?.pushViewController(changePasswordVC, animated: true)
-                    })
-                    self?.present(alert, animated: true)
 
-                case .failure(let error):
-                    let alert = UIAlertController(
-                        title: "Verification Failed",
-                        message: error.localizedDescription,
-                        preferredStyle: .alert
-                    )
-                    alert.addAction(UIAlertAction(title: "OK", style: .default))
-                    self?.present(alert, animated: true)
-                }
-            }
-        }
+    func verifyButtonTapped() {
+        viewModel.verifyOTP { _ in }
     }
 }
 
+extension OtpVerificationViewController: NibLoadableViewController {}

@@ -22,5 +22,16 @@ protocol AuthRepository {
         completion: @escaping (Result<SignupResponse, Error>) -> Void
     )
     
+    func resetPassword(
+        email: String,
+        completion: @escaping (Result<SignupResponse, Error>) -> Void
+    )
+    
+    func verifyOtp(
+        code: String,
+        completion: @escaping (Result<VerifyOtpResponse, Error>) -> Void
+    )
+    
+    
 }
 

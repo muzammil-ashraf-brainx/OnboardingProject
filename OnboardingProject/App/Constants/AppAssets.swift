@@ -14,6 +14,7 @@ enum AppAssets {
     static let primaryAppColor = "Primary"
     static let radioSelectedColor = "radioSelected"
     static let radioUnSelectedColor = "lightGray"
+    static let blackOverlayBackground = "BlackOverlay"
 
 }
 

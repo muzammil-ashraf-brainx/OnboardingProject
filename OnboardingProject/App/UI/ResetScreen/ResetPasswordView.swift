@@ -19,10 +19,8 @@ class ResetPasswordView: UIView {
     @IBOutlet weak var resetPasswordProceedButton: UIButton!
     @IBOutlet weak var resetPasswordLabel: UILabel!
     
-    // MARK: - Delegate
     weak var delegate: ResetPasswordViewDelegate?
     
-    // MARK: - Public Accessors
     var registeredEmail: String? {
         return resetPasswordEmailTextField?.text
     }
@@ -33,14 +31,12 @@ class ResetPasswordView: UIView {
         setupUIElements()
     }
     
-    // MARK: - Actions
     @IBAction func resetPasswordButtonTapped(_ sender: Any) {
         delegate?.didTapResetPasswordProceedButton()
     }
     
-    // MARK: - Private Methods
     private func setupUIElements() {
-        resetPasswordProceedButton?.setupButton()
+        resetPasswordProceedButton?.setupFilledButton()
     }
     
 }

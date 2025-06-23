@@ -14,7 +14,7 @@ struct LocalizedStrings {
     static var splashButtonTitle: String {
         LocalizationKey.Splash.buttonTitle.localized
     }
-    
+
     static var signupButtonText: String {
         LocalizationKey.Splash.signup.localized
     }
@@ -35,6 +35,33 @@ struct LocalizedStrings {
     static var getInfoNext: String {
         LocalizationKey.GetInfo.next.localized
     }
-    
-}
 
+    // MARK: - OTP Screen
+    static var otpStepIndicator: String {
+        LocalizationKey.OTP.stepIndicator.localized
+    }
+
+    static var otpInstruction: String {
+        LocalizationKey.OTP.instruction.localized
+    }
+
+    static var otpDidNotReceive: String {
+        LocalizationKey.OTP.didNotReceive.localized
+    }
+
+    static var otpVerify: String {
+        LocalizationKey.OTP.verify.localized
+    }
+
+    static var otpResend: String {
+        LocalizationKey.OTP.resend.localized
+    }
+    
+    static func otpSentMessage(with email: String) -> String {
+        String.localizedStringWithFormat(
+            String(localized: String.LocalizationValue(LocalizationKey.OTP.sentMessage)),
+            email
+        )
+    }
+
+}
