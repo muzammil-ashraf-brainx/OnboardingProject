@@ -8,9 +8,7 @@
 import Foundation
 
 class DefaultAuthRepository: AuthRepository {
-    
     // MARK: - Public API Calls
-    
     func signup(
         username: String,
         email: String,
@@ -56,7 +54,6 @@ class DefaultAuthRepository: AuthRepository {
     }
     
     // MARK: - Generic Request Handler
-    
     private func executeRequest<T: Decodable>(
         _ requestType: Request,
         completion: @escaping (Result<T, Error>) -> Void
@@ -93,9 +90,7 @@ class DefaultAuthRepository: AuthRepository {
 }
 
 extension DefaultAuthRepository {
-    
     // MARK: - Auth API Requests
-    
     enum Request {
         case signup(username: String, email: String, password: String, confirmPassword: String)
         case login(username: String, password: String)

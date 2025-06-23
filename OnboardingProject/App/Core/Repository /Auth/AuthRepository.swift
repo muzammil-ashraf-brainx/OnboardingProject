@@ -32,6 +32,5 @@ protocol AuthRepository {
         completion: @escaping (Result<VerifyOtpResponse, Error>) -> Void
     )
     
-    
 }
 
