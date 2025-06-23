@@ -16,12 +16,10 @@ protocol GetInfoViewDelegate: AnyObject {
 
 // MARK: - GetInfoView
 class GetInfoView: UIView {
-    
     // MARK: - Outlets
     @IBOutlet private weak var collectionView: UICollectionView!
     @IBOutlet private weak var titleLabel: UILabel!
     
-    // MARK: - Properties
     weak var delegate: GetInfoViewDelegate?
     
     private let dobButton: UIButton = {
@@ -39,11 +37,11 @@ class GetInfoView: UIView {
     private lazy var nextButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(LocalizedStrings.getInfoNext, for: .normal)
-        button.backgroundColor = AppColors.primary
+        button.backgroundColor = UIColor(named: AppAssets.primaryAppColor)
         button.setTitleColor(.white, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
-        button.setupButton()
+        button.setupFilledButton()
         return button
     }()
     
@@ -104,8 +102,12 @@ class GetInfoView: UIView {
     private func setupCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(UINib(nibName: "OptionCell", bundle: nil), forCellWithReuseIdentifier: "OptionCell")
-        collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
+        collectionView.registerNib(for: OptionCell.self)
+        collectionView.register(
+            UICollectionReusableView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: AppAssets.getInfoReusableHeader
+        )
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -150,7 +152,6 @@ class GetInfoView: UIView {
     }
     
     // MARK: - Actions
-    
     @objc private func dobTapped() {
         overlayView.isHidden = false
     }
@@ -185,17 +186,13 @@ extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "OptionCell", for: indexPath) as? OptionCell else {
-            fatalError("Failed to dequeue OptionCell")
-        }
-        
+        let cell: OptionCell = collectionView.dequeueCell(for: indexPath)
         let text = sections[indexPath.section][indexPath.item]
         let isSelected = selectedIndices[indexPath.section] == indexPath.item
         cell.configure(with: text, isSelected: isSelected)
         cell.optionSelected = { [weak self] in
             self?.updateSelection(for: indexPath.section, index: indexPath.item)
         }
-        
         return cell
     }
     
@@ -211,7 +208,7 @@ extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
             return UICollectionReusableView()
         }
         
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath)
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: AppAssets.getInfoReusableHeader, for: indexPath)
         header.subviews.forEach { $0.removeFromSuperview() }
         
         let label = UILabel()
@@ -267,5 +264,6 @@ extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
     }
+    
 }
 

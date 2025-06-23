@@ -9,9 +9,12 @@ import Foundation
 
 struct GetInfoSectionData {
     
+    static let identityOptions = IdentityType.allCases
+    static let genderOptions = GenderType.allCases
+    
     static let sections: [[String]] = [
-        ["Press", "Government", "Public Figure", "Non-profit", "Business", "Student", "Others"],
-        ["Woman", "Man", "Transgender", "Non-binary", "Not to say"]
+        identityOptions.map { $0.rawValue },
+        genderOptions.map { $0.rawValue }
     ]
     
     static let initialSelectedIndices: [Int?] = Array(repeating: nil, count: sections.count)

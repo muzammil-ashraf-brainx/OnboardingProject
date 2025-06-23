@@ -122,6 +122,7 @@
 			packageReferences = (
 				43F89F212DF1BB5B00F25114 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				43388E9D2DF85437009645AA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				43B0C8822E04250200B523DB /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 438B081C2DD5E449001E112D /* Products */;
@@ -361,6 +362,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 8.0.0;
+			};
+		};
+		43B0C8822E04250200B523DB /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.59.1;
 			};
 		};
 		43F89F212DF1BB5B00F25114 /* XCRemoteSwiftPackageReference "Alamofire" */ = {

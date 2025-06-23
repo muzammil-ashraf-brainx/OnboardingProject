@@ -17,7 +17,6 @@ protocol SignupViewDelegate: AnyObject {
 
 class SignupView: UIView {
     
-    // MARK: - Outlets
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -25,12 +24,10 @@ class SignupView: UIView {
     @IBOutlet weak var googleSignupBtn: UIButton!
     @IBOutlet weak var appleSignupBtn: UIButton!
     
-    // MARK: - Properties
     private var isPasswordVisible = false
     private var isConfirmPasswordVisible = false
     weak var delegate: SignupViewDelegate?
     
-    // MARK: - Public Accessors
     var email: String? { emailTextField.text }
     var username: String? { usernameTextField.text }
     var password: String? { passwordTextField.text }
@@ -44,36 +41,13 @@ class SignupView: UIView {
     
     // MARK: - UI Setup
     private func setupUIElements() {
-        passwordTextField.addPasswordToggle(
-            isVisible: isPasswordVisible,
-            target: self,
-            action: #selector(togglePasswordVisibility)
-        )
-        
-        confirmPasswordTextField.addPasswordToggle(
-            isVisible: isConfirmPasswordVisible,
-            target: self,
-            action: #selector(toggleConfirmPasswordVisibility)
-        )
-        
-        googleSignupBtn?.setupButton()
-        appleSignupBtn?.setupButton()
+        passwordTextField.configureAsSecureTextField()
+        confirmPasswordTextField.configureAsSecureTextField()
+        googleSignupBtn?.setupBorderdButton()
+        appleSignupBtn?.setupBorderdButton()
     }
     
-    // MARK: - Toggle Actions
-    @objc private func togglePasswordVisibility() {
-        isPasswordVisible.toggle()
-        passwordTextField.isSecureTextEntry = !isPasswordVisible
-        passwordTextField.updateEyeIcon(isVisible: isPasswordVisible)
-    }
-    
-    @objc private func toggleConfirmPasswordVisibility() {
-        isConfirmPasswordVisible.toggle()
-        confirmPasswordTextField.isSecureTextEntry = !isConfirmPasswordVisible
-        confirmPasswordTextField.updateEyeIcon(isVisible: isConfirmPasswordVisible)
-    }
-    
-    // MARK: - Actions
+    // MARK: - Actions Methods
     @IBAction func googleSignupTapped(_ sender: UIButton) {
         delegate?.didTapGoogleSignup()
     }
@@ -85,26 +59,5 @@ class SignupView: UIView {
     @IBAction func loginNowButtonTapped(_ sender: Any) {
         delegate?.didTapLoginNow()
     }
-    // MARK: - Delegation Setup
-    func setupDelegates(_ delegate: SignupViewDelegate) {
-        self.delegate = delegate
-        emailTextField.delegate = self
-        usernameTextField.delegate = self
-        passwordTextField.delegate = self
-        confirmPasswordTextField.delegate = self
-    }
     
 }
-
-// MARK: - UITextFieldDelegate
-extension SignupView: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        delegate?.didBeginEditing(textField)
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        delegate?.didEndEditing(textField)
-    }
-    
-}
-

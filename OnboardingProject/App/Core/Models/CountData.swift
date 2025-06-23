@@ -8,8 +8,9 @@
 import Foundation
 
 struct CountData: Codable {
-    let _id: String?
+    let _id: String? //Why underscore
     let followersCount: Int
     let followingCount: Int
     let unreadCount: Int
+    
 }

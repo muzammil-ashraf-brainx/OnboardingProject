@@ -9,38 +9,44 @@ import UIKit
 
 // MARK: - GetInfoViewController
 
-class GetInfoViewController: UIViewController {
-    
-    // MARK: - Outlets
-    
+class GetInfoViewController: SuperViewController {
     @IBOutlet weak var getInfoView: GetInfoView!
-    
-    // MARK: - Properties
     
     private let viewModel = GetInfoViewModel()
     
     // MARK: - Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
     }
     
     // MARK: - Private Methods
-    
     private func setupView() {
         getInfoView.delegate = self
         getInfoView.configure(sections: viewModel.sections, selectedIndices: viewModel.selectedIndices)
     }
+    
+    private func showValidationAlert() {
+        let alert = UIAlertController(
+            title: AppStrings.AlertTitle.incompleteForm,
+            message: AppStrings.AlertMessage.incompleteForm,
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: AppStrings.AlertButton.ok, style: .default))
+        
+        present(alert, animated: true)
+    }
+    
 }
 
 // MARK: - GetInfoViewDelegate
 
 extension GetInfoViewController: GetInfoViewDelegate {
-    
     func didTapNext() {
-        if viewModel.isValid {
-        } else {
+        guard viewModel.isValid else {
+            showValidationAlert()
+            return
         }
     }
     
@@ -55,3 +61,6 @@ extension GetInfoViewController: GetInfoViewDelegate {
     
 }
 
+// MARK: - NibLoadableViewController
+
+extension GetInfoViewController: NibLoadableViewController {}

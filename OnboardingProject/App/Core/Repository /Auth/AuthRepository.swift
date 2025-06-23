@@ -8,9 +8,19 @@
 import Foundation
 
 protocol AuthRepository {
-    func signup(signupRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void)
-    func login(loginRequestParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void)
-    func resetPassword(resetParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void)
-    func verifyOtp(otpParams: [String: Any], completion: @escaping (Result<SignupResponse, Error>) -> Void)
+    func signup(
+        username: String,
+        email: String,
+        password: String,
+        confirmPassword: String,
+        completion: @escaping (Result<SignupResponse, Error>) -> Void
+    )
+    
+    func login(
+        username: String,
+        password: String,
+        completion: @escaping (Result<SignupResponse, Error>) -> Void
+    )
     
 }
+
