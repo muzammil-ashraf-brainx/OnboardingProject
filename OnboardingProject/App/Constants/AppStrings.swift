@@ -56,6 +56,7 @@ enum AppStrings {
         static let unknownServerError = "Unknown server error"
         static let otpVerified = "Otp Verified Successfully"
         static let enterValidOtp = "Pls enter the valid 4-digit OTP"
+        static let passwordChangeSuccessfully = "Password has been changed scuccessfully"
 
     }
     

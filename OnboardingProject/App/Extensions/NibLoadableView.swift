@@ -20,5 +20,5 @@ extension NibLoadableView where Self: UIView {
         }
         return view
     }
-    
+
 }

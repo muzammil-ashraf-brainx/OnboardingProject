@@ -46,6 +46,7 @@ class OtpVerificationViewController: SuperViewController {
                     message: AppStrings.AlertMessage.otpVerified,
                     okAction: {
                         let changePasswordVC: ChangePasswordViewController = .instantiate()
+                        changePasswordVC.configure(with: resetURL)
                         self?.navigationController?.pushViewController(changePasswordVC, animated: true)
                     }
                 )

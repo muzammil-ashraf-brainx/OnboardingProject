@@ -8,6 +8,7 @@
 import Foundation
 
 protocol AuthRepository {
+    
     func signup(
         username: String,
         email: String,
@@ -29,7 +30,14 @@ protocol AuthRepository {
     
     func verifyOtp(
         code: String,
-        completion: @escaping (Result<VerifyOtpResponse, Error>) -> Void
+        completion: @escaping (Result<APIResponse<ResetData>, Error>) -> Void
+    )
+    
+    func changePassword(
+        resetURL: String,
+        password: String,
+        confirmPassword: String,
+        completion: @escaping (Result<APIResponse<TokenData>, Error>) -> Void
     )
     
 }

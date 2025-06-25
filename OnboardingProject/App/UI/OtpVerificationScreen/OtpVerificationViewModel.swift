@@ -8,8 +8,8 @@
 import Foundation
 
 class OTPViewModel {
-    
-    
+
+    // MARK: - Properties
     var otpCode: String = "" {
         didSet {
             otpModel = OTPModel(code: otpCode)
@@ -20,29 +20,31 @@ class OTPViewModel {
     private var otpModel: OTPModel?
     private let authRepo: AuthRepository = DefaultAuthRepository()
     private var userEmail: String
-    
+
+    // MARK: - Callbacks
     var updateUI: (() -> Void)?
     var onError: ((String) -> Void)?
-    var onSuccess: ((String) -> Void)? 
+    var onSuccess: ((String) -> Void)? // Passes resetURL
     var onResendSuccess: (() -> Void)?
     
     var isValidOTP: Bool {
         return otpModel?.isValid ?? false
     }
-    
+
     // MARK: - Init
     init(email: String) {
         self.userEmail = email
     }
-    
+
     // MARK: - Verify OTP
-    func verifyOTP(completion: @escaping (Result<VerifyOtpResponse, Error>) -> Void) {
+    func verifyOTP(completion: @escaping (Result<APIResponse<ResetData>, Error>) -> Void) {
         guard isValidOTP else {
-            completion(.failure(NSError(
+            let error = NSError(
                 domain: "",
                 code: -1,
                 userInfo: [NSLocalizedDescriptionKey: AppStrings.AlertMessage.enterValidOtp]
-            )))
+            )
+            completion(.failure(error))
             return
         }
         
@@ -57,7 +59,8 @@ class OTPViewModel {
             }
         }
     }
-    
+
+    // MARK: - Resend OTP
     func resendOTP() {
         authRepo.resetPassword(email: userEmail) { [weak self] result in
             switch result {
@@ -68,5 +71,5 @@ class OTPViewModel {
             }
         }
     }
-    
 }
+
