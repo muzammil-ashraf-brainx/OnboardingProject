@@ -8,12 +8,13 @@
 
 import Foundation
 
-enum APIEndpoints {
-    enum Auth {
+struct APIEndpoints {
+    
+    struct Auth {
         static let signup = "auth/signup"
         static let login = "auth/login"
         static let resetPassword = "auth/forgot_password"
         static let verifyOtp = "auth/verify_otp"
     }
-
+    
 }

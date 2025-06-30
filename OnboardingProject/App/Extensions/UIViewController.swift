@@ -8,10 +8,12 @@
 import UIKit
 
 protocol NibLoadableViewController {
+    
     static func instantiate() -> Self
 }
 
 extension NibLoadableViewController where Self: UIViewController {
+    
     static func instantiate() -> Self {
         return Self(nibName: String(describing: Self.self), bundle: nil)
     }

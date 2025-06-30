@@ -8,39 +8,42 @@
 import Foundation
 
 enum RequestError: LocalizedError {
+    
     case invalidURL
     case failedToEncodeParameters
     case invalidResponse
     case noData
     case unknownServerError
-
+    
     var errorDescription: String? {
         switch self {
         case .invalidURL:
-            return "The URL is invalid."
+            return LocalizationKey.RequestError.invalidURL.localized
         case .failedToEncodeParameters:
-            return "Failed to encode request parameters."
+            return LocalizationKey.RequestError.failedToEncode.localized
         case .invalidResponse:
-            return "The server response was invalid."
+            return LocalizationKey.RequestError.invalidResponse.localized
         case .noData:
-            return "No data was returned from the server."
+            return LocalizationKey.RequestError.noData.localized
         case .unknownServerError:
-            return "An unexpected server error occurred."
+            return LocalizationKey.RequestError.unknown.localized
         }
     }
 }
 
 struct APIError: LocalizedError {
     let message: String
-
+    
     var errorDescription: String? {
         message
     }
-
+    
+    // MARK: - Initializers
+    
     init(message: String) {
         self.message = message
     }
-
+    
     init(data: Data) {
         if let json = try? JSONSerialization.jsonObject(with: data) as? [String: String],
            let errorMessage = json[BackendKeys.errorMessage] {

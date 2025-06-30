@@ -8,11 +8,10 @@ import UIKit
 
 // MARK: - Delegate Protocol
 protocol SignupViewDelegate: AnyObject {
+    
     func didBeginEditing(_ textField: UITextField)
     func didEndEditing(_ textField: UITextField)
-    func didTapGoogleSignup()
-    func didTapAppleSignup()
-    func didTapLoginNow()
+    
 }
 
 class SignupView: UIView {
@@ -24,8 +23,6 @@ class SignupView: UIView {
     @IBOutlet weak var googleSignupBtn: UIButton!
     @IBOutlet weak var appleSignupBtn: UIButton!
     
-    private var isPasswordVisible = false
-    private var isConfirmPasswordVisible = false
     weak var delegate: SignupViewDelegate?
     
     var email: String? { emailTextField.text }
@@ -43,21 +40,11 @@ class SignupView: UIView {
     private func setupUIElements() {
         passwordTextField.configureAsSecureTextField()
         confirmPasswordTextField.configureAsSecureTextField()
-        googleSignupBtn?.setupBorderdButton()
-        appleSignupBtn?.setupBorderdButton()
-    }
-    
-    // MARK: - Actions Methods
-    @IBAction func googleSignupTapped(_ sender: UIButton) {
-        delegate?.didTapGoogleSignup()
-    }
-    
-    @IBAction func appleSignupTapped(_ sender: UIButton) {
-        delegate?.didTapAppleSignup()
-    }
-    
-    @IBAction func loginNowButtonTapped(_ sender: Any) {
-        delegate?.didTapLoginNow()
+        googleSignupBtn?.setCornerRadius(18)
+        googleSignupBtn.setBorder(width: 0.5, color: .lightGray)
+        appleSignupBtn?.setCornerRadius(18)
+        appleSignupBtn?.setBorder(width: 0.5, color: .lightGray)
+        
     }
     
 }

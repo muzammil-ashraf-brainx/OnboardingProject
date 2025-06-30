@@ -7,11 +7,10 @@
 
 import UIKit
 
-// MARK: - OptionCell
 class OptionCell: UICollectionViewCell {
     
     // MARK: - IBOutlets
-    @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var radioLabel: UILabel!
     @IBOutlet private weak var radioButton: UIButton!
     
     var optionSelected: (() -> Void)?
@@ -23,31 +22,37 @@ class OptionCell: UICollectionViewCell {
         setupButtonActions()
     }
     
-    // MARK: - Configuration
+    // MARK: - Appearance Configuration
     private func configureAppearance() {
-        let unselectedImage = AppIcons.radioUnselected?
-            .withTintColor(UIColor(named: AppAssets.radioUnSelectedColor)!, renderingMode: .alwaysOriginal)
+        let unselectedColor = UIColor(resource: .lightGray)
+        let selectedColor = UIColor(resource: .primary)
+        
+        let unselectedImage = UIImage(systemName: SystemImages.radioUnselected)?
+            .withTintColor(unselectedColor, renderingMode: .alwaysOriginal)
+        
+        let selectedImage = UIImage(systemName: SystemImages.radioSelected)?
+            .withTintColor(selectedColor, renderingMode: .alwaysOriginal)
+        
         radioButton.setImage(unselectedImage, for: .normal)
-        
-        let selectedImage = AppIcons.radioSelected?
-            .withTintColor(UIColor(named: AppAssets.radioSelectedColor)!, renderingMode: .alwaysOriginal)
-        
         radioButton.setImage(selectedImage, for: .selected)
         
         radioButton.tintColor = .clear
+        radioButton.isUserInteractionEnabled = true
     }
     
+    // MARK: - Setup
     private func setupButtonActions() {
         radioButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
     }
     
-    @objc private func radioButtonTapped() {
+    @objc
+    private func radioButtonTapped() {
         optionSelected?()
     }
     
+    // MARK: - Public Configuration
     func configure(with text: String, isSelected: Bool) {
-        label.text = text
-        radioButton.isHidden = false
+        radioLabel.text = text
         radioButton.isSelected = isSelected
     }
     

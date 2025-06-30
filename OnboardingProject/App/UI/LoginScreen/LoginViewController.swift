@@ -18,14 +18,10 @@ class LoginViewController: SuperViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        loginView.delegate = self
         keyboardResponsiveView = formContainerView
         bindViewModel()
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
     
     // MARK: - Bind ViewModel
     private func bindViewModel() {
@@ -35,14 +31,14 @@ class LoginViewController: SuperViewController {
         
         viewModel.onLoginFailure = { [weak self] errorMessage in
             self?.showAlert(
-                title: AppStrings.AlertTitle.loginFailed,
+                title: LocalizationKey.AlertTitle.loginFailed.localized,
                 message: errorMessage
             )
         }
         
         viewModel.onValidationFailed = { [weak self] validationMessage in
             self?.showAlert(
-                title: AppStrings.AlertTitle.validationFailed,
+                title: LocalizationKey.AlertTitle.validationFailed.localized,
                 message: validationMessage
             )
         }
@@ -54,26 +50,22 @@ class LoginViewController: SuperViewController {
         navigationController?.pushViewController(getInfoVC, animated: true)
     }
     
-}
-
-// MARK: - LoginViewDelegate
-extension LoginViewController: LoginViewDelegate {
-    func didTapCreateAccount() {
-        let signupVC: SignupViewController = .instantiate()
-        navigationController?.pushViewController(signupVC, animated: true)
-    }
+    // MARK: - Actions
+    @IBAction private func loginButtonTapped(_ sender: UIButton) {
+        viewModel.login(username: loginView.username, password: loginView.password)    }
     
-    func didTapLogin() {
-        viewModel.login(username: loginView.username, password: loginView.password)
-    }
-    
-    func didTapForgetPassword() {
+    @IBAction private func forgetPasswordTapped(_ sender: UIButton) {
         let resetPasswordVC: ResetPasswordViewController = .instantiate()
         navigationController?.pushViewController(resetPasswordVC, animated: true)
     }
-
+    
+    @IBAction func createAccountButtonTapped(_ sender: Any) {
+        let signupVC: SignupViewController = .instantiate()
+        navigationController?.pushViewController(signupVC, animated: true)    }
     
 }
+
+// TODO: Adopt NibLoadableViewController to enable instantiating this controller from its associated XIB file using .instantiate()
 
 extension LoginViewController: NibLoadableViewController {}
 

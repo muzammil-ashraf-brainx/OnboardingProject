@@ -13,10 +13,11 @@ struct GetInfoSectionData {
     static let genderOptions = GenderType.allCases
     
     static let sections: [[String]] = [
-        identityOptions.map { $0.rawValue },
-        genderOptions.map { $0.rawValue }
+        identityOptions.map { $0.localized },
+        genderOptions.map { $0.localized }
     ]
     
     static let initialSelectedIndices: [Int?] = Array(repeating: nil, count: sections.count)
     
 }
+

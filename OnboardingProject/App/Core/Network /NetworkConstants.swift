@@ -6,6 +6,7 @@
 //
 
 enum NetworkHeaders {
+    
     static func contentType() -> String {
         return "Content-Type"
     }
@@ -13,6 +14,7 @@ enum NetworkHeaders {
 }
 
 enum NetworkHeaderValues {
+    
     static func json() -> String {
         return "application/json"
     }

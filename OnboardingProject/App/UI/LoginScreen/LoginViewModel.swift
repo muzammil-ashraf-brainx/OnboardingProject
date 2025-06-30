@@ -24,29 +24,23 @@ class LoginViewModel {
     
     // MARK: - Public Methods
     func login(username: String?, password: String?) {
-        guard let username = username,
-              let password = password,
-              !username.isEmpty,
-              !password.isEmpty else {
-            onValidationFailed?(AppStrings.AlertMessage.incompleteForm)
-            return
-        }
+        let trimmedUsername = username?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmedPassword = password?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         
-        if let validationError = validateCredentials(username: username, password: password) {
-            onValidationFailed?(validationError)
+        if let error = validate(username: trimmedUsername, password: trimmedPassword) {
+            onValidationFailed?(error.localizedDescription)
             return
         }
         
         authRepo.login(
-            username: username.trimmingCharacters(in: .whitespacesAndNewlines),
-            password: password
+            username: trimmedUsername,
+            password: trimmedPassword
         ) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:
                     self?.onLoginSuccess?()
                 case .failure(let error):
-                    print(error)
                     self?.onLoginFailure?(error.localizedDescription)
                 }
             }
@@ -58,24 +52,40 @@ class LoginViewModel {
     }
     
     // MARK: - Validation
-    private func validateCredentials(username: String?, password: String?) -> String? {
-        let trimmedUsername = username?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let trimmedPassword = password ?? ""
-        
-        if trimmedUsername.isEmpty {
-            return AppStrings.AlertMessage.usernameEmpty
+    private func validate(username: String, password: String) -> ValidationError? {
+        if username.isEmpty {
+            return .usernameEmpty
         }
         
-        if trimmedPassword.isEmpty {
-            return AppStrings.AlertMessage.passwordEmpty
+        if password.isEmpty {
+            return .passwordEmpty
         }
         
-        if trimmedPassword.count < 8 {
-            return AppStrings.AlertMessage.passwordTooShort
+        if password.count < 8 {
+            return .passwordTooShort
         }
         
         return nil
     }
-    
 }
 
+// MARK: - Validation Errors
+extension LoginViewModel {
+    enum ValidationError: LocalizedError {
+        case usernameEmpty
+        case passwordEmpty
+        case passwordTooShort
+        
+        var errorDescription: String? {
+            switch self {
+            case .usernameEmpty:
+                return LocalizationKey.AlertMessage.usernameEmpty.localized
+            case .passwordEmpty:
+                return LocalizationKey.AlertMessage.passwordEmpty.localized
+            case .passwordTooShort:
+                return LocalizationKey.AlertMessage.passwordTooShort.localized
+            }
+        }
+    }
+    
+}

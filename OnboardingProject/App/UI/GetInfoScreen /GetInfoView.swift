@@ -9,13 +9,14 @@ import UIKit
 
 // MARK: - GetInfoViewDelegate
 protocol GetInfoViewDelegate: AnyObject {
+    
     func didTapNext()
     func didSelectDOB(_ date: Date)
     func didUpdateSelection(section: Int, index: Int?)
 }
 
-// MARK: - GetInfoView
 class GetInfoView: UIView {
+    
     // MARK: - Outlets
     @IBOutlet private weak var collectionView: UICollectionView!
     @IBOutlet private weak var titleLabel: UILabel!
@@ -24,8 +25,8 @@ class GetInfoView: UIView {
     
     private let dobButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: AppIcons.calendar), for: .normal)
-        button.setTitle(LocalizedStrings.getInfoDOB, for: .normal)
+        button.setImage(UIImage(systemName: SystemImages.calendar), for: .normal)
+        button.setTitle(LocalizationKey.GetInfo.dob.localized, for: .normal)
         button.tintColor = .black
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16)
@@ -36,12 +37,13 @@ class GetInfoView: UIView {
     
     private lazy var nextButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle(LocalizedStrings.getInfoNext, for: .normal)
-        button.backgroundColor = UIColor(named: AppAssets.primaryAppColor)
+        button.setTitle(LocalizationKey.GetInfo.next.localized, for: .normal)
+        button.backgroundColor = UIColor(resource: .primary)
         button.setTitleColor(.white, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
-        button.setupFilledButton()
+        button.setCornerRadius(18)
+        button.setBorder(width: 0.5, color: .lightGray)
         return button
     }()
     
@@ -50,6 +52,7 @@ class GetInfoView: UIView {
     
     private var sections: [[String]] = []
     private var selectedIndices: [Int?] = []
+    
     
     // MARK: - Lifecycle
     override func awakeFromNib() {
@@ -73,7 +76,7 @@ class GetInfoView: UIView {
     
     func updateDOBButton(title: String) {
         dobButton.setTitle("  \(title)", for: .normal)
-        dobButton.setImage(UIImage(systemName: AppIcons.calendar), for: .normal)
+        dobButton.setImage(UIImage(systemName: SystemImages.calendar), for: .normal)
     }
     
     // MARK: - Setup
@@ -106,7 +109,7 @@ class GetInfoView: UIView {
         collectionView.register(
             UICollectionReusableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: AppAssets.getInfoReusableHeader
+            withReuseIdentifier: AppConstants.GetInfoView.headerReuseIdentifier
         )
         
         let layout = UICollectionViewFlowLayout()
@@ -125,7 +128,7 @@ class GetInfoView: UIView {
         popupDatePicker.preferredDatePickerStyle = .wheels
         popupDatePicker.backgroundColor = .white
         popupDatePicker.translatesAutoresizingMaskIntoConstraints = false
-        popupDatePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+        popupDatePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
         
         overlayView.addSubview(popupDatePicker)
         
@@ -133,34 +136,35 @@ class GetInfoView: UIView {
         overlayView.addGestureRecognizer(tapGesture)
         tapGesture.cancelsTouchesInView = false
         
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let window = windowScene.windows.first {
-            window.addSubview(overlayView)
+        self.addSubview(overlayView)
+        
+        NSLayoutConstraint.activate([
+            overlayView.topAnchor.constraint(equalTo: topAnchor),
+            overlayView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            overlayView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            overlayView.trailingAnchor.constraint(equalTo: trailingAnchor),
             
-            NSLayoutConstraint.activate([
-                overlayView.topAnchor.constraint(equalTo: window.topAnchor),
-                overlayView.bottomAnchor.constraint(equalTo: window.bottomAnchor),
-                overlayView.leadingAnchor.constraint(equalTo: window.leadingAnchor),
-                overlayView.trailingAnchor.constraint(equalTo: window.trailingAnchor),
-                
-                popupDatePicker.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor),
-                popupDatePicker.centerYAnchor.constraint(equalTo: overlayView.centerYAnchor),
-                popupDatePicker.widthAnchor.constraint(equalTo: overlayView.widthAnchor, multiplier: 0.85),
-                popupDatePicker.heightAnchor.constraint(equalToConstant: 250)
-            ])
-        }
+            popupDatePicker.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor),
+            popupDatePicker.centerYAnchor.constraint(equalTo: overlayView.centerYAnchor),
+            popupDatePicker.widthAnchor.constraint(equalTo: overlayView.widthAnchor, multiplier: 0.85),
+            popupDatePicker.heightAnchor.constraint(equalToConstant: 250)
+        ])
     }
     
+    
     // MARK: - Actions
-    @objc private func dobTapped() {
+    @objc
+    private func dobTapped() {
         overlayView.isHidden = false
     }
     
-    @objc private func hideDatePicker() {
+    @objc
+    private func hideDatePicker() {
         overlayView.isHidden = true
     }
     
-    @objc private func dateChanged(_ sender: UIDatePicker) {
+    @objc
+    private func dateChanged(_ sender: UIDatePicker) {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         let dateString = formatter.string(from: sender.date)
@@ -169,7 +173,8 @@ class GetInfoView: UIView {
         hideDatePicker()
     }
     
-    @objc private func nextButtonTapped() {
+    @objc
+    private func nextButtonTapped() {
         delegate?.didTapNext()
     }
 }
@@ -208,11 +213,15 @@ extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
             return UICollectionReusableView()
         }
         
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: AppAssets.getInfoReusableHeader, for: indexPath)
+        let header = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: AppConstants.GetInfoView.headerReuseIdentifier,
+            for: indexPath
+        )
         header.subviews.forEach { $0.removeFromSuperview() }
         
         let label = UILabel()
-        label.text = LocalizedStrings.getInfoHeader
+        label.text = LocalizationKey.GetInfo.header.localized;
         label.font = .systemFont(ofSize: 18, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(label)
@@ -250,13 +259,13 @@ extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
+        10
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 12
+        12
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -264,6 +273,5 @@ extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
     }
-    
 }
 

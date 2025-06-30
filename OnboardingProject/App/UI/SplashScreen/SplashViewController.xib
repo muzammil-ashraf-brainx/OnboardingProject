@@ -57,6 +57,9 @@
                                     <string key="keyPath">layer.masksToBounds	</string>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="signupButtonTapped:" destination="-1" eventType="touchUpInside" id="rUi-zo-4bd"/>
+                            </connections>
                         </button>
                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bvX-Bz-6pk">
                             <rect key="frame" x="189" y="0.0" width="172" height="48"/>
@@ -76,6 +79,9 @@
                                     <string key="keyPath">layer.masksToBounds	</string>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="loginButtonTapped:" destination="-1" eventType="touchUpInside" id="nEJ-Er-mfY"/>
+                            </connections>
                         </button>
                     </subviews>
                 </stackView>

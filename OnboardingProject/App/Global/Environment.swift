@@ -8,8 +8,18 @@
 import Foundation
 
 enum Environment {
-    static var baseURL: String {
-        return "https://enpak-dev.brainxdemo.com/api/v1/"
+    
+    case development
+    
+    static var current: Environment {
+        return .development
+    }
+    
+    var baseURL: URL {
+        switch self {
+        case .development:
+            return URL(string: "https://enpak-dev.brainxdemo.com/api/v1/")!
+        }
     }
     
 }

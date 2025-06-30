@@ -29,36 +29,39 @@ class SuperViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: - Alert Utility
+    // MARK: - Public Methods
+    
     func showAlert(
         title: String,
         message: String,
         okAction: (() -> Void)? = nil
     ) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let ok = UIAlertAction(title: AppStrings.AlertButton.ok, style: .default) { _ in
+        let ok = UIAlertAction(title: LocalizationKey.AlertButton.ok.localized, style: .default) { _ in
             okAction?()
         }
-        
         alert.addAction(ok)
         present(alert, animated: true)
     }
     
+    // MARK: - Private Methods (Keyboard Registration)
+    
     private func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(handleKeyboardWillShow(_:)),
+            selector: #selector(handleKeyboardWillShow),
             name: UIResponder.keyboardWillShowNotification,
             object: nil
         )
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(handleKeyboardWillHide(_:)),
+            selector: #selector(handleKeyboardWillHide),
             name: UIResponder.keyboardWillHideNotification,
             object: nil
         )
     }
+    
+    // MARK: - Private Methods (Keyboard Handling)
     
     @objc private func handleKeyboardWillShow(_ notification: Notification) {
         guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
@@ -80,7 +83,8 @@ class SuperViewController: UIViewController {
         }
     }
     
-    @objc private func handleKeyboardWillHide(_ notification: Notification) {
+    @objc
+    private func handleKeyboardWillHide(_ notification: Notification) {
         guard let animationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double,
               let animationCurve = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt else {
             return
@@ -98,13 +102,16 @@ class SuperViewController: UIViewController {
         }
     }
     
+    // MARK: - Private Methods (Keyboard Dismissal)
+    
     private func setupDismissKeyboardGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissTheKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
     
-    @objc private func dismissTheKeyboard() {
+    @objc
+    private func dismissTheKeyboard() {
         view.endEditing(true)
     }
     

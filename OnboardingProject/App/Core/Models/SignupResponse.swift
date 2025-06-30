@@ -8,11 +8,13 @@
 import Foundation
 
 struct SignupResponse: Codable {
+    
     let data: SignupData?
 }
 
 struct SignupData: Codable {
+    
     let token: String
-    let countData: CountData
+    let countData: UserStats
     let user: User?
 }

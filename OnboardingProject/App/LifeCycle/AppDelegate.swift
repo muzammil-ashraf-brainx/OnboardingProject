@@ -1,12 +1,10 @@
-// MARK: - File Header
 //  AppDelegate.swift
 //  OnboardingProject
 //
 //  Created by BrainX iOS Dev on 15/05/2025.
 
-// MARK: - Imports
-import UIKit
 import GoogleSignIn
+import UIKit
 
 // MARK: - Class Declaration
 @main

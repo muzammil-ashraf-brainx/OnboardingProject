@@ -8,6 +8,7 @@
 import Foundation
 
 protocol AuthRepository {
+    
     func signup(
         username: String,
         email: String,

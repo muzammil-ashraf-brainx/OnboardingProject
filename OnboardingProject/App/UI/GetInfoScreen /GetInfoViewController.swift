@@ -10,6 +10,7 @@ import UIKit
 // MARK: - GetInfoViewController
 
 class GetInfoViewController: SuperViewController {
+    
     @IBOutlet weak var getInfoView: GetInfoView!
     
     private let viewModel = GetInfoViewModel()
@@ -20,7 +21,6 @@ class GetInfoViewController: SuperViewController {
         setupView()
     }
     
-    // MARK: - Private Methods
     private func setupView() {
         getInfoView.delegate = self
         getInfoView.configure(sections: viewModel.sections, selectedIndices: viewModel.selectedIndices)
@@ -28,12 +28,12 @@ class GetInfoViewController: SuperViewController {
     
     private func showValidationAlert() {
         let alert = UIAlertController(
-            title: AppStrings.AlertTitle.incompleteForm,
-            message: AppStrings.AlertMessage.incompleteForm,
+            title: LocalizationKey.AlertTitle.incompleteForm,
+            message: LocalizationKey.AlertMessage.incompleteForm,
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: AppStrings.AlertButton.ok, style: .default))
+        alert.addAction(UIAlertAction(title: LocalizationKey.AlertButton.ok.localized, style: .default))
         
         present(alert, animated: true)
     }
@@ -61,6 +61,6 @@ extension GetInfoViewController: GetInfoViewDelegate {
     
 }
 
-// MARK: - NibLoadableViewController
+// MARK: - NibLoadableViewController for Initiate the Controller
 
 extension GetInfoViewController: NibLoadableViewController {}

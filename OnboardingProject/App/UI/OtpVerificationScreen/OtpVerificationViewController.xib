@@ -85,7 +85,7 @@
                                         <color key="titleColor" red="0.4716828465461731" green="0.36443248391151428" blue="0.10020814090967178" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </state>
                                     <connections>
-                                        <action selector="resendButtonTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="gmp-tK-ozz"/>
+                                        <action selector="resendButtonTapped:" destination="-1" eventType="touchUpInside" id="b3R-SP-ooP"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -100,7 +100,7 @@
                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                     <state key="normal" title="Verify"/>
                                     <connections>
-                                        <action selector="verifyButtonTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="GXT-qB-Ev8"/>
+                                        <action selector="verifyButtonTapped:" destination="-1" eventType="touchUpInside" id="Vtk-2p-sMk"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -139,15 +139,15 @@
                 <constraint firstItem="Hqc-XB-fOc" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="wjk-ja-YMW"/>
             </constraints>
             <connections>
-                <outlet property="codeTextField1" destination="VRq-nj-zaR" id="iFn-R6-zSa"/>
-                <outlet property="codeTextField2" destination="zTW-Sz-yq9" id="Ph1-Wc-2BM"/>
-                <outlet property="codeTextField3" destination="gNg-KQ-wbY" id="HBD-aZ-dHz"/>
-                <outlet property="codeTextField4" destination="SNe-9d-mw2" id="36v-Lr-0tL"/>
                 <outlet property="instructionLabel" destination="3h1-H0-Ic0" id="GDI-0p-gDT"/>
                 <outlet property="resendButton" destination="Ft3-4k-HCU" id="Nlh-rW-Ooz"/>
                 <outlet property="resendInfoLabel" destination="GUX-tU-XjA" id="toY-Zp-Rg0"/>
                 <outlet property="stepLabel" destination="9uU-Np-5Zy" id="jrP-AS-InZ"/>
                 <outlet property="verifyButton" destination="pyd-w1-fUu" id="x3b-Cl-fCs"/>
+                <outletCollection property="codeTextFields" destination="VRq-nj-zaR" collectionClass="NSMutableArray" id="lIV-gm-aP4"/>
+                <outletCollection property="codeTextFields" destination="zTW-Sz-yq9" collectionClass="NSMutableArray" id="qcR-yB-Hom"/>
+                <outletCollection property="codeTextFields" destination="gNg-KQ-wbY" collectionClass="NSMutableArray" id="eCR-Wq-geB"/>
+                <outletCollection property="codeTextFields" destination="SNe-9d-mw2" collectionClass="NSMutableArray" id="BUh-r4-jlB"/>
             </connections>
             <point key="canvasLocation" x="139.69465648854961" y="19.718309859154932"/>
         </view>

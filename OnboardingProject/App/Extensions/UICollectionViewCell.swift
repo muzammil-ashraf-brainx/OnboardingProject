@@ -7,12 +7,9 @@
 import UIKit
 
 extension UICollectionViewCell {
+    
     static var reuseIdentifier: String {
         return String(describing: self)
     }
 
-    static var nibName: String {
-        return String(describing: self)
-    }
-    
 }

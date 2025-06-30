@@ -65,7 +65,7 @@
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <buttonConfiguration key="configuration" style="plain" title="Forget Password?"/>
                             <connections>
-                                <action selector="forgetPasswordTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="xBK-xL-IY4"/>
+                                <action selector="forgetPasswordTapped:" destination="-1" eventType="touchUpInside" id="AMg-ou-eQD"/>
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E0A-Mp-4l5">
@@ -77,7 +77,7 @@
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <state key="normal" title="Login"/>
                             <connections>
-                                <action selector="loginButtonTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="EpI-cN-sZ4"/>
+                                <action selector="loginButtonTapped:" destination="-1" eventType="touchUpInside" id="Xy8-pk-rfc"/>
                             </connections>
                         </button>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="Vtk-3S-o9u">
@@ -103,7 +103,7 @@
                                     <state key="normal" title="Create now"/>
                                     <buttonConfiguration key="configuration" style="plain" title="Create now"/>
                                     <connections>
-                                        <action selector="createAccountButtonTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="aso-pB-Jp2"/>
+                                        <action selector="createAccountButtonTapped:" destination="-1" eventType="touchUpInside" id="xDU-cD-ZHF"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -152,7 +152,7 @@
                 <outlet property="forgetPasswordButton" destination="nZl-qj-5HS" id="MVZ-TE-6Ha"/>
                 <outlet property="loginButton" destination="E0A-Mp-4l5" id="6xd-6G-i8N"/>
                 <outlet property="passwordTextField" destination="nHB-xN-vtf" id="wdC-yW-Cg3"/>
-                <outlet property="usernameTextField" destination="wrj-Bo-Kxu" id="MCW-Mb-JUc"/>
+                <outlet property="userNameTextField" destination="wrj-Bo-Kxu" id="eKG-sq-fWi"/>
             </connections>
             <point key="canvasLocation" x="46.564885496183201" y="19.718309859154932"/>
         </view>

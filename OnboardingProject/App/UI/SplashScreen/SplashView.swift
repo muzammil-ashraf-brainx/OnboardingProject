@@ -22,19 +22,15 @@ class SplashView: UIView {
     }
     
     // MARK: - Setup Methods
-    func setupView() {
-        btnSignup?.setupFilledButton()
-        btnLogin?.setupFilledButton()
+    private func setupView() {
+        btnSignup.setCornerRadius(18)
+        btnSignup.setBorder(width: 0.5, color: .lightGray)
+        btnLogin.setCornerRadius(18)
+        btnLogin.setBorder(width: 0.5, color: .lightGray)
     }
     
-    func setBtnsTitleText() {
-        lblBtnsTitle.text = LocalizedStrings.splashButtonTitle
-    }
-    
-    // MARK: - Configuration
-    func configureButtonActions(signupAction: Selector, loginAction: Selector, target: Any) {
-        btnSignup.addTarget(target, action: signupAction, for: .touchUpInside)
-        btnLogin.addTarget(target, action: loginAction, for: .touchUpInside)
+    private func setBtnsTitleText() {
+        lblBtnsTitle.text = LocalizationKey.Splash.buttonTitle.localized
     }
     
 }

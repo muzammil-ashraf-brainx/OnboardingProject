@@ -9,20 +9,15 @@
 import UIKit
 
 extension UIButton {
-    func setupFilledButton() {
-        self.layer.cornerRadius = 18
-        self.layer.borderColor = UIColor.lightGray.cgColor
-        self.layer.borderWidth = 0.5
-        self.layer.masksToBounds = true
+    
+    func setCornerRadius(_ radius: CGFloat) {
+        self.layer.cornerRadius = radius
         self.clipsToBounds = true
     }
     
-    func setupBorderdButton() {
-        self.layer.cornerRadius = 18
-        self.layer.borderColor = UIColor.lightGray.cgColor
-        self.layer.borderWidth = 0.5
-        self.layer.masksToBounds = true
-        self.clipsToBounds = true
+    func setBorder(width: CGFloat, color: UIColor) {
+        self.layer.borderWidth = width
+        self.layer.borderColor = color.cgColor
     }
     
 }

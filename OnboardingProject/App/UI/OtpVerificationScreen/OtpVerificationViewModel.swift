@@ -36,13 +36,9 @@ class OTPViewModel {
     }
     
     // MARK: - Verify OTP
-    func verifyOTP(completion: @escaping (Result<VerifyOtpResponse, Error>) -> Void) {
+    func verifyOTP() {
         guard isValidOTP else {
-            completion(.failure(NSError(
-                domain: "",
-                code: -1,
-                userInfo: [NSLocalizedDescriptionKey: AppStrings.AlertMessage.enterValidOtp]
-            )))
+            onError?(LocalizationKey.AlertMessage.enterValidOtp.localized)
             return
         }
         
@@ -50,14 +46,12 @@ class OTPViewModel {
             switch result {
             case .success(let response):
                 self?.onSuccess?(response.data.resetURL)
-                completion(.success(response))
             case .failure(let error):
                 self?.onError?(error.localizedDescription)
-                completion(.failure(error))
             }
         }
     }
-    
+
     func resendOTP() {
         authRepo.resetPassword(email: userEmail) { [weak self] result in
             switch result {

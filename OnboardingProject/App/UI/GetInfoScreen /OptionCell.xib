@@ -53,8 +53,8 @@
             </constraints>
             <size key="customSize" width="92" height="50"/>
             <connections>
-                <outlet property="label" destination="LdK-Dq-p3H" id="jYT-IQ-f5h"/>
                 <outlet property="radioButton" destination="SkB-OV-6kI" id="2YB-3v-wAP"/>
+                <outlet property="radioLabel" destination="LdK-Dq-p3H" id="xy5-5K-8Aj"/>
             </connections>
             <point key="canvasLocation" x="245.80152671755724" y="39.436619718309863"/>
         </collectionViewCell>

@@ -110,7 +110,7 @@
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" title=""/>
                                                     <connections>
-                                                        <action selector="googleSignupTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="sbs-mh-EGb"/>
+                                                        <action selector="googleSignupTapped:" destination="-1" eventType="touchUpInside" id="HxA-lE-ILd"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -150,7 +150,7 @@
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" title=""/>
                                                     <connections>
-                                                        <action selector="appleSignupTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="dp4-98-zUf"/>
+                                                        <action selector="appleSignupTapped:" destination="-1" eventType="touchUpInside" id="tvc-1s-rdZ"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -187,7 +187,7 @@
                                                         <color key="titleColor" red="0.4716828465461731" green="0.36443248391151428" blue="0.10020814090967178" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
                                                     <connections>
-                                                        <action selector="loginNowButtonTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="ca6-7P-8Tm"/>
+                                                        <action selector="loginNowButtonTapped:" destination="-1" eventType="touchUpInside" id="6FB-2a-kez"/>
                                                     </connections>
                                                 </button>
                                             </subviews>

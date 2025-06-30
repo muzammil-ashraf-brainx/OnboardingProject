@@ -8,11 +8,9 @@
 import UIKit
 
 class ChangePasswordViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-
+  
 }
 
+// TODO: Adopt NibLoadableViewController to enable instantiating this controller from its associated XIB file using .instantiate()
 extension ChangePasswordViewController: NibLoadableViewController {}
+

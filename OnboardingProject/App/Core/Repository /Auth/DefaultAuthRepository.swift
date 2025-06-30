@@ -8,6 +8,7 @@
 import Foundation
 
 class DefaultAuthRepository: AuthRepository {
+    
     // MARK: - Public API Calls
     func signup(
         username: String,
@@ -90,6 +91,7 @@ class DefaultAuthRepository: AuthRepository {
 }
 
 extension DefaultAuthRepository {
+    
     // MARK: - Auth API Requests
     enum Request {
         case signup(username: String, email: String, password: String, confirmPassword: String)
@@ -100,15 +102,16 @@ extension DefaultAuthRepository {
         var url: URL? {
             switch self {
             case .signup:
-                return URL(string: Environment.baseURL + APIEndpoints.Auth.signup)
+                return URL(string: APIEndpoints.Auth.signup, relativeTo: Environment.current.baseURL)
             case .login:
-                return URL(string: Environment.baseURL + APIEndpoints.Auth.login)
+                return URL(string: APIEndpoints.Auth.login, relativeTo: Environment.current.baseURL)
             case .resetPassword:
-                return URL(string: Environment.baseURL + APIEndpoints.Auth.resetPassword)
+                return URL(string: APIEndpoints.Auth.resetPassword, relativeTo: Environment.current.baseURL)
             case .verifyOtp:
-                return URL(string: Environment.baseURL + APIEndpoints.Auth.verifyOtp)
+                return URL(string: APIEndpoints.Auth.verifyOtp, relativeTo: Environment.current.baseURL)
             }
         }
+        
         
         var method: HTTPMethod { .post }
         

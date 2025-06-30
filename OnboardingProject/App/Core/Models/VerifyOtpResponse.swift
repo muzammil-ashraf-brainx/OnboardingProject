@@ -6,12 +6,15 @@
 //
 
 import Foundation
-struct VerifyOtpResponse: Decodable {
+
+struct VerifyOtpResponse: Codable {
+    
     let data: ResetData
     let message: String
 }
 
-struct ResetData: Decodable {
+struct ResetData: Codable {
+    
     let resetURL: String
 }
 

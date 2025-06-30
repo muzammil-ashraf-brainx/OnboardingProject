@@ -7,7 +7,6 @@
 
 import UIKit
 
-// MARK: - SplashViewController
 class SplashViewController: UIViewController {
     
     // MARK: - Outlets
@@ -31,19 +30,20 @@ class SplashViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
         setupBindings()
     }
     
-    // MARK: - UI Configuration
-    private func configureUI() {
-        splashView.configureButtonActions(
-            signupAction: #selector(handleSignupBtnTap),
-            loginAction: #selector(handleLoginBtnTap),
-            target: self
-        )
+    
+    // MARK: - Actions
+    @IBAction
+    func signupButtonTapped(_ sender: UIButton) {
+        viewModel.handleSignupAction()
     }
     
+    @IBAction
+    func loginButtonTapped(_ sender: UIButton) {
+        viewModel.handleLoginAction()
+    }
     // MARK: - Bindings
     private func setupBindings() {
         viewModel.onNavigate = { [weak self] destination in
@@ -89,23 +89,10 @@ class SplashViewController: UIViewController {
     }
     
     private func addFlipTransition() {
-        if #available(iOS 13.0, *) {
-            let transition = CATransition()
-            transition.duration = transitionDuration
-            view.window?.layer.add(transition, forKey: kCATransition)
-        } else {
-            addFadeTransition(to: view.window?.layer ?? view.layer)
-        }
-    }
-    
-    // MARK: - Button Actions
-    @objc private func handleSignupBtnTap() {
-        viewModel.handleSignupAction()
-    }
-    
-    @objc private func handleLoginBtnTap() {
-        viewModel.handleLoginAction()
+        let transition = CATransition()
+        transition.duration = transitionDuration
+        view.window?.layer.add(transition, forKey: kCATransition)
+        addFadeTransition(to: view.window?.layer ?? view.layer)
     }
     
 }
-

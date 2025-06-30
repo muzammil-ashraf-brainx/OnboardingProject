@@ -23,18 +23,18 @@ class ResetPasswordViewModel {
         let trimmedEmail = email?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         
         if trimmedEmail.isEmpty {
-            return AppStrings.AlertMessage.emailEmpty
+            return LocalizationKey.AlertMessage.emailEmpty.localized
         }
         
         if !isValidEmail(trimmedEmail) {
-            return AppStrings.AlertMessage.invalidEmail
+            return LocalizationKey.AlertMessage.invalidEmail.localized
         }
         
         return nil
     }
     
     private func isValidEmail(_ email: String) -> Bool {
-        return NSPredicate(format: "SELF MATCHES %@", AppRegex.email).evaluate(with: email)
+        return NSPredicate(format: "SELF MATCHES %@", AppConstants.Regex.email).evaluate(with: email)
     }
     
     func resetPassword(email: String) {
