@@ -47,7 +47,7 @@ class OtpVerificationViewController: SuperViewController {
                     title: LocalizationKey.AlertTitle.success.localized,
                     message: LocalizationKey.AlertMessage.otpVerified.localized,
                     okAction: {
-                        let changePasswordVC: ChangePasswordViewController = .instantiate()
+                        let changePasswordVC = ChangePasswordViewController()
                         self?.navigationController?.pushViewController(changePasswordVC, animated: true)
                     }
                 )
@@ -78,7 +78,7 @@ class OtpVerificationViewController: SuperViewController {
 
     // MARK: - Navigation
     private func navigateToOtpSentAlert(email: String) {
-        let alertVC: OtpSentAlertViewController = .instantiate()
+        let alertVC =  OtpSentAlertViewController()
         alertVC.configure(email: email)
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
@@ -105,8 +105,4 @@ extension OtpVerificationViewController: OtpVerificationViewDelegate {
     }
     
 }
-
-// TODO: Adopt NibLoadableViewController to enable instantiating this controller from its associated XIB file using .instantiate()
-
-extension OtpVerificationViewController: NibLoadableViewController {}
 

@@ -61,6 +61,3 @@ extension GetInfoViewController: GetInfoViewDelegate {
     
 }
 
-// MARK: - NibLoadableViewController for Initiate the Controller
-
-extension GetInfoViewController: NibLoadableViewController {}

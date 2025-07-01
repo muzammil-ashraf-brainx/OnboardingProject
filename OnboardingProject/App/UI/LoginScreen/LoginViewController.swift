@@ -46,7 +46,7 @@ class LoginViewController: SuperViewController {
     }
     
     private func navigateToGetInfoScreen() {
-        let getInfoVC: GetInfoViewController = .instantiate()
+        let getInfoVC = GetInfoViewController()
         navigationController?.pushViewController(getInfoVC, animated: true)
     }
     
@@ -55,17 +55,13 @@ class LoginViewController: SuperViewController {
         viewModel.login(username: loginView.username, password: loginView.password)    }
     
     @IBAction private func forgetPasswordTapped(_ sender: UIButton) {
-        let resetPasswordVC: ResetPasswordViewController = .instantiate()
+        let resetPasswordVC = ResetPasswordViewController()
         navigationController?.pushViewController(resetPasswordVC, animated: true)
     }
     
     @IBAction func createAccountButtonTapped(_ sender: Any) {
-        let signupVC: SignupViewController = .instantiate()
+        let signupVC = SignupViewController()
         navigationController?.pushViewController(signupVC, animated: true)    }
     
 }
-
-// TODO: Adopt NibLoadableViewController to enable instantiating this controller from its associated XIB file using .instantiate()
-
-extension LoginViewController: NibLoadableViewController {}
 

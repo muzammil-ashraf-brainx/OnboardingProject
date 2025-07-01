@@ -17,7 +17,7 @@ class SignupViewController: SuperViewController {
     private var activeField: UIView?
     private let viewModel = SignupViewModel()
     
-
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +31,7 @@ class SignupViewController: SuperViewController {
         
         bindViewModel()
     }
-
+    
     // MARK: - Actions
     @IBAction func signupBtnTapped(_ sender: Any) {
         viewModel.signup(
@@ -52,8 +52,7 @@ class SignupViewController: SuperViewController {
         }
         
         viewModel.onSignupSuccess = { [weak self] message in
-            let getInfoVC: GetInfoViewController = .instantiate()
-            self?.navigationController?.pushViewController(getInfoVC, animated: true)
+            let getInfoVC =  GetInfoViewController();           self?.navigationController?.pushViewController(getInfoVC, animated: true)
         }
         
         viewModel.onSignupFailure = { [weak self] errorMessage in
@@ -86,7 +85,7 @@ extension SignupViewController: SignupViewDelegate {
     }
     
     @IBAction func loginNowButtonTapped(_ sender: Any) {
-        let loginVC: LoginViewController = .instantiate()
+        let loginVC = LoginViewController()
         navigationController?.pushViewController(loginVC, animated: true)
     }
 }
@@ -96,13 +95,9 @@ extension SignupViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         activeField = textField
     }
-
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         activeField = nil
     }
 }
-
-// TODO: Adopt NibLoadableViewController to enable instantiating this controller from its associated XIB file using .instantiate()
-
-extension SignupViewController: NibLoadableViewController {}
 

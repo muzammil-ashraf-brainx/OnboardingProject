@@ -11,6 +11,5 @@ class ChangePasswordViewController: UIViewController {
   
 }
 
-// TODO: Adopt NibLoadableViewController to enable instantiating this controller from its associated XIB file using .instantiate()
-extension ChangePasswordViewController: NibLoadableViewController {}
+
 

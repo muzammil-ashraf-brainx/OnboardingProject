@@ -57,9 +57,9 @@ class SplashViewController: UIViewController {
         
         switch destination {
         case .signup:
-            viewController = SignupViewController.instantiate()
+            viewController = SignupViewController()
         case .login:
-            viewController = LoginViewController.instantiate()
+            viewController = LoginViewController()
         }
         
         guard let window = view.window else {

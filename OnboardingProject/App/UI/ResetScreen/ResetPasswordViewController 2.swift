@@ -44,7 +44,7 @@ class ResetPasswordViewController: SuperViewController {
     
     // MARK: - Navigation
     private func showOtpSentAlert(email: String) {
-        let alertVC: OtpSentAlertViewController = .instantiate()
+        let alertVC =  OtpSentAlertViewController()
         alertVC.configure(email: email)
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
@@ -59,6 +59,3 @@ class ResetPasswordViewController: SuperViewController {
     
 }
 
-// TODO: Adopt NibLoadableViewController to enable instantiating this controller from its associated XIB file using .instantiate()
-
-extension ResetPasswordViewController: NibLoadableViewController {}

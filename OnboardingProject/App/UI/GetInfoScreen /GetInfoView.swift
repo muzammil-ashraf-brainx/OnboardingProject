@@ -221,7 +221,7 @@ extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
         header.subviews.forEach { $0.removeFromSuperview() }
         
         let label = UILabel()
-        label.text = LocalizationKey.GetInfo.header.localized;
+        label.text = LocalizationKey.GetInfo.header.localized
         label.font = .systemFont(ofSize: 18, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(label)

@@ -34,7 +34,7 @@ class OtpSentAlertViewController: UIViewController {
     }
     
     private func navigateToOtpVerification() {
-        let otpVC: OtpVerificationViewController = .instantiate()
+        let otpVC = OtpVerificationViewController()
         otpVC.configure(email: email)
         
         if let navigationController = presentingViewController as? UINavigationController {
@@ -47,8 +47,4 @@ class OtpSentAlertViewController: UIViewController {
     }
     
 }
-
-// TODO: Adopt NibLoadableViewController to enable instantiating this controller from its associated XIB file using .instantiate()
-
-extension OtpSentAlertViewController: NibLoadableViewController {}
 
