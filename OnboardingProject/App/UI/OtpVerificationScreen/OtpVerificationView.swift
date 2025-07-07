@@ -22,8 +22,7 @@ class OtpVerificationView: UIView {
     @IBOutlet weak var resendInfoLabel: UILabel!
     @IBOutlet weak var resendButton: UIButton!
     @IBOutlet weak var verifyButton: UIButton!
-    @IBOutlet private(set) weak var verifyButtonView: UIView!
-    
+    @IBOutlet private(set) weak var verifyButtonContainerView: UIView!
     
     // MARK: - Properties
     weak var delegate: OtpVerificationViewDelegate?
@@ -58,7 +57,8 @@ class OtpVerificationView: UIView {
     // MARK: - Text Field Logic
     @objc
     private func textFieldDidChange(_ textField: UITextField) {
-        guard let text = textField.text, text.count == 1 else {
+        guard let text = textField.text,
+              text.count == 1 else {
             textField.layer.borderColor = UIColor.lightGray.cgColor
             updateVerifyButtonState()
             return
@@ -66,7 +66,8 @@ class OtpVerificationView: UIView {
         
         textField.layer.borderColor = UIColor(resource: .primary).cgColor
         
-        if let index = codeTextFields.firstIndex(of: textField), index < codeTextFields.count - 1 {
+        if let index = codeTextFields.firstIndex(of: textField),
+           index < codeTextFields.count - 1 {
             codeTextFields[index + 1].becomeFirstResponder()
         } else {
             textField.resignFirstResponder()

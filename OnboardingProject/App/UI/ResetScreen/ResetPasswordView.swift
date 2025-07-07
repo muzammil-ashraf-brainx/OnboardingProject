@@ -13,7 +13,7 @@ class ResetPasswordView: UIView {
     @IBOutlet weak var resetPasswordEmailTextField: UITextField!
     @IBOutlet weak var resetPasswordProceedButton: UIButton!
     @IBOutlet weak var resetPasswordLabel: UILabel!
-    @IBOutlet private(set) weak var proceedButtonView: UIView!
+    @IBOutlet private(set) weak var proceedButtonContainerView: UIView!
     
     var registeredEmail: String? {
         return resetPasswordEmailTextField?.text

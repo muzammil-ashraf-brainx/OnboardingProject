@@ -27,7 +27,7 @@ class OtpVerificationViewController: SuperViewController {
         super.viewDidLoad()
         viewModel = OTPViewModel(email: email)
         otpVerificationView.delegate = self
-        keyboardResponsiveView = otpVerificationView.verifyButtonView
+        keyboardResponsiveView = otpVerificationView.verifyButtonContainerView
         setupBindings()
     }
     

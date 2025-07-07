@@ -14,9 +14,6 @@ class OtpSentAlertView: UIView {
     @IBOutlet private weak var messageLabel: UILabel!
     @IBOutlet private weak var okButton: UIButton!
     
-    // MARK: - Properties
-    var onOk: (() -> Void)?
-    
     // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()

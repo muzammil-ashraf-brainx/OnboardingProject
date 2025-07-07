@@ -18,7 +18,7 @@ class ResetPasswordViewController: SuperViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        keyboardResponsiveView = resetPasswordView .proceedButtonView
+        keyboardResponsiveView = resetPasswordView .proceedButtonContainerView
         bindViewModel()
     }
     

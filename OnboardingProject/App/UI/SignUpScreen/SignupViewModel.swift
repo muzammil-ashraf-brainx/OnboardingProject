@@ -28,8 +28,13 @@ class SignupViewModel {
         let trimmedPassword = password?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let trimmedConfirmPassword = confirmPassword?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         
-        if let error = validate(email: trimmedEmail, username: trimmedUsername, password: trimmedPassword, confirmPassword: trimmedConfirmPassword
-        ) {
+        if let error = validate(
+            email: trimmedEmail,
+            username: trimmedUsername,
+            password: trimmedPassword,
+            confirmPassword: trimmedConfirmPassword
+        )
+        {
             onValidationFailure?(error)
             return
         }

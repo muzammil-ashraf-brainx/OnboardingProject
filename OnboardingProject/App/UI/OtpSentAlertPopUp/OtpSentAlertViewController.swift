@@ -27,14 +27,11 @@ class OtpSentAlertViewController: UIViewController {
     
     private func configureView() {
         otpSentAlertView.configure(withEmail: email)
-        
-        otpSentAlertView.onOk = { [weak self] in
-            self?.navigateToOtpVerification()
-        }
     }
     
-    @IBAction private func okButtonTapped(_ sender: UIButton) {
-        otpSentAlertView.onOk?()
+    @IBAction
+    private func okButtonTapped(_ sender: UIButton) {
+        navigateToOtpVerification()
     }
     
     private func navigateToOtpVerification() {

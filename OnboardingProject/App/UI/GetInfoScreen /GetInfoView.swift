@@ -170,40 +170,56 @@ class GetInfoView: UIView {
 extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return sections.count
+        return sections.count * 2
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return sections[section].count + 1
+        if section % 2 == 0 {
+            return 1
+        } else {
+            let dataSectionIndex = section / 2
+            return GetInfoSectionData.sections[dataSectionIndex].count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.item == 0 {
+        let groupIndex = indexPath.section / 2
+        
+        if indexPath.section % 2 == 0 {
             let cell: OptionHeaderCell = collectionView.dequeueCell(for: indexPath)
-            cell.configure(title: LocalizationKey.GetInfo.header.localized)
+            let title: String
+            switch groupIndex {
+            case 0: title = LocalizationKey.GetInfo.header.localized
+            case 1: title = LocalizationKey.GetInfo.header.localized
+            default: title = ""
+            }
+            cell.configure(title: title)
+            return cell
+        } else {
+            let cell: OptionCell = collectionView.dequeueCell(for: indexPath)
+            let option = GetInfoSectionData.sections[groupIndex][indexPath.item]
+            let isSelected = selectedIndices[groupIndex] == indexPath.item
+            
+            cell.configure(with: option, isSelected: isSelected)
+            cell.optionSelected = { [weak self] in
+                self?.updateSelection(for: groupIndex, index: indexPath.item)
+            }
             return cell
         }
-        
-        let cell: OptionCell = collectionView.dequeueCell(for: indexPath)
-        let text = sections[indexPath.section][indexPath.item - 1]
-        let isSelected = selectedIndices[indexPath.section] == (indexPath.item - 1)
-        cell.configure(with: text, isSelected: isSelected)
-        cell.optionSelected = { [weak self] in
-            self?.updateSelection(for: indexPath.section, index: indexPath.item - 1)
-        }
-        return cell
     }
     
-    private func updateSelection(for section: Int, index: Int) {
-        selectedIndices[section] = (selectedIndices[section] == index) ? nil : index
-        collectionView.reloadSections(IndexSet(integer: section))
+    private func updateSelection(for groupIndex: Int, index: Int) {
+        selectedIndices[groupIndex] = (selectedIndices[groupIndex] == index) ? nil : index
+        
+        let headerSection = groupIndex * 2
+        let dataSection = headerSection + 1
+        collectionView.reloadSections(IndexSet([headerSection, dataSection]))
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        if indexPath.item == 0 {
+        if indexPath.section % 2 == 0 {
             return CGSize(width: collectionView.bounds.width, height: 40)
         }
         
