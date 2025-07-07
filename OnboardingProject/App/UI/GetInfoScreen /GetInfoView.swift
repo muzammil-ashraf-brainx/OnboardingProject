@@ -10,19 +10,34 @@ import UIKit
 // MARK: - GetInfoViewDelegate
 protocol GetInfoViewDelegate: AnyObject {
     
-    func didSelectDOB(_ date: Date)
+    func didSelectDateOfBirth(_ date: Date)
     func didUpdateSelection(section: Int, index: Int?)
 }
 
 class GetInfoView: UIView {
     
-    // MARK: - Outlets
+    // MARK: - Types
+    enum Section {
+        case header(title: String)
+        case options(items: [String], selectedIndex: Int?)
+        
+        var itemCount: Int {
+            switch self {
+            case .header:
+                return 1
+            case .options(let items, _):
+                return items.count
+            }
+        }
+    }
+    
+    // MARK: - Properties
     @IBOutlet private weak var collectionView: UICollectionView!
     @IBOutlet private weak var titleLabel: UILabel!
     
     weak var delegate: GetInfoViewDelegate?
     
-    private let dobButton: UIButton = {
+    private let dateOfBirthButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: SystemImages.calendar), for: .normal)
         button.setTitle(LocalizationKey.GetInfo.dob.localized, for: .normal)
@@ -40,58 +55,65 @@ class GetInfoView: UIView {
         button.backgroundColor = UIColor(resource: .primary)
         button.setTitleColor(.white, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setCornerRadius(18)
-        button.setBorder(width: 0.5, color: .lightGray)
+        button.layer.cornerRadius = 18
+        button.layer.borderWidth = 0.5
+        button.layer.borderColor = UIColor.lightGray.cgColor
         return button
     }()
     
     private var overlayView: UIView!
-    private var popupDatePicker: UIDatePicker!
+    private var datePicker: UIDatePicker!
     
-    private var sections: [[String]] = []
-    private var selectedIndices: [Int?] = []
+    private var sections: [Section] = []
     
     // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
         setupUI()
         setupCollectionView()
-        setupOverlayDatePicker()
+        setupDatePickerOverlay()
     }
     
-    // MARK: - Configuration
-    func configure(sections: [[String]], selectedIndices: [Int?]) {
-        self.sections = sections
-        self.selectedIndices = selectedIndices
+    // MARK: - Public Methods
+    func configure(sectionData: [[String]], selectedIndices: [Int?]) {
+        var newSections: [Section] = []
+        for (index, items) in sectionData.enumerated() {
+            let headerTitle = index == 0 || index == 1 ? LocalizationKey.GetInfo.header.localized : ""
+            newSections.append(.header(title: headerTitle))
+            newSections.append(.options(items: items, selectedIndex: selectedIndices[index]))
+        }
+        self.sections = newSections
         collectionView.reloadData()
     }
     
     func updateSelection(section: Int, index: Int?) {
-        selectedIndices[section] = index
+        guard case .options(var items, _) = sections[section] else { return }
+        sections[section] = .options(items: items, selectedIndex: index)
         collectionView.reloadSections(IndexSet(integer: section))
+        delegate?.didUpdateSelection(section: section / 2, index: index)
     }
     
-    func updateDOBButton(title: String) {
-        dobButton.setTitle("  \(title)", for: .normal)
-        dobButton.setImage(UIImage(systemName: SystemImages.calendar), for: .normal)
+    func updateDateOfBirthButton(title: String) {
+        dateOfBirthButton.setTitle("  \(title)", for: .normal)
+        dateOfBirthButton.setImage(UIImage(systemName: SystemImages.calendar), for: .normal)
     }
     
-    // MARK: - Setup
+    // MARK: - Setup Methods
     private func setupUI() {
         backgroundColor = .white
-        addSubview(dobButton)
+        addSubview(dateOfBirthButton)
         addSubview(nextButton)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
-        dobButton.addTarget(self, action: #selector(dobTapped), for: .touchUpInside)
+        dateOfBirthButton.addTarget(self, action: #selector(dateOfBirthTapped), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
-            dobButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 20),
-            dobButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            dobButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            dobButton.heightAnchor.constraint(equalToConstant: 44),
+            dateOfBirthButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 20),
+            dateOfBirthButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            dateOfBirthButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            dateOfBirthButton.heightAnchor.constraint(equalToConstant: 44),
             
-            nextButton.topAnchor.constraint(equalTo: dobButton.bottomAnchor, constant: 20),
+            nextButton.topAnchor.constraint(equalTo: dateOfBirthButton.bottomAnchor, constant: 20),
             nextButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             nextButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             nextButton.heightAnchor.constraint(equalToConstant: 50),
@@ -110,26 +132,26 @@ class GetInfoView: UIView {
         collectionView.collectionViewLayout = layout
     }
     
-    private func setupOverlayDatePicker() {
+    private func setupDatePickerOverlay() {
         overlayView = UIView()
         overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         overlayView.translatesAutoresizingMaskIntoConstraints = false
         overlayView.isHidden = true
         
-        popupDatePicker = UIDatePicker()
-        popupDatePicker.datePickerMode = .date
-        popupDatePicker.preferredDatePickerStyle = .wheels
-        popupDatePicker.backgroundColor = .white
-        popupDatePicker.translatesAutoresizingMaskIntoConstraints = false
-        popupDatePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
+        datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .wheels
+        datePicker.backgroundColor = .white
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
         
-        overlayView.addSubview(popupDatePicker)
+        overlayView.addSubview(datePicker)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideDatePicker))
         overlayView.addGestureRecognizer(tapGesture)
         tapGesture.cancelsTouchesInView = false
         
-        self.addSubview(overlayView)
+        addSubview(overlayView)
         
         NSLayoutConstraint.activate([
             overlayView.topAnchor.constraint(equalTo: topAnchor),
@@ -137,90 +159,89 @@ class GetInfoView: UIView {
             overlayView.leadingAnchor.constraint(equalTo: leadingAnchor),
             overlayView.trailingAnchor.constraint(equalTo: trailingAnchor),
             
-            popupDatePicker.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor),
-            popupDatePicker.centerYAnchor.constraint(equalTo: overlayView.centerYAnchor),
-            popupDatePicker.widthAnchor.constraint(equalTo: overlayView.widthAnchor, multiplier: 0.85),
-            popupDatePicker.heightAnchor.constraint(equalToConstant: 250)
+            datePicker.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor),
+            datePicker.centerYAnchor.constraint(equalTo: overlayView.centerYAnchor),
+            datePicker.widthAnchor.constraint(equalTo: overlayView.widthAnchor, multiplier: 0.85),
+            datePicker.heightAnchor.constraint(equalToConstant: 250)
         ])
     }
     
     // MARK: - Actions
-    @objc
-    private func dobTapped() {
+    @objc private func dateOfBirthTapped() {
         overlayView.isHidden = false
     }
     
-    @objc
-    private func hideDatePicker() {
+    @objc private func hideDatePicker() {
         overlayView.isHidden = true
     }
     
-    @objc
-    private func dateChanged(_ sender: UIDatePicker) {
+    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         let dateString = formatter.string(from: sender.date)
-        updateDOBButton(title: dateString)
-        delegate?.didSelectDOB(sender.date)
+        updateDateOfBirthButton(title: dateString)
+        delegate?.didSelectDateOfBirth(sender.date)
         hideDatePicker()
     }
 }
 
-// MARK: - UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
-extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    
+// MARK: - UICollectionViewDataSource
+extension GetInfoView: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return sections.count * 2
+        sections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section % 2 == 0 {
-            return 1
-        } else {
-            let dataSectionIndex = section / 2
-            return GetInfoSectionData.sections[dataSectionIndex].count
-        }
+        sections[section].itemCount
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let groupIndex = indexPath.section / 2
-        
-        if indexPath.section % 2 == 0 {
+        switch sections[indexPath.section] {
+        case .header(let title):
             let cell: OptionHeaderCell = collectionView.dequeueCell(for: indexPath)
-            let title: String
-            switch groupIndex {
-            case 0: title = LocalizationKey.GetInfo.header.localized
-            case 1: title = LocalizationKey.GetInfo.header.localized
-            default: title = ""
-            }
             cell.configure(title: title)
             return cell
-        } else {
+            
+        case .options(let items, let selectedIndex):
             let cell: OptionCell = collectionView.dequeueCell(for: indexPath)
-            let option = GetInfoSectionData.sections[groupIndex][indexPath.item]
-            let isSelected = selectedIndices[groupIndex] == indexPath.item
+            let option = items[indexPath.item]
+            let isSelected = selectedIndex == indexPath.item
             
             cell.configure(with: option, isSelected: isSelected)
             cell.optionSelected = { [weak self] in
-                self?.updateSelection(for: groupIndex, index: indexPath.item)
+                self?.updateSelection(for: indexPath.section, index: indexPath.item)
             }
             return cell
         }
     }
-    
-    private func updateSelection(for groupIndex: Int, index: Int) {
-        selectedIndices[groupIndex] = (selectedIndices[groupIndex] == index) ? nil : index
-        
-        let headerSection = groupIndex * 2
-        let dataSection = headerSection + 1
-        collectionView.reloadSections(IndexSet([headerSection, dataSection]))
+}
+
+// MARK: - UICollectionViewDelegate
+extension GetInfoView: UICollectionViewDelegate {
+    private func updateSelection(for section: Int, index: Int) {
+        guard case .options(_, let currentIndex) = sections[section] else { return }
+        let newIndex = currentIndex == index ? nil : index
+        updateSelection(section: section, index: newIndex)
     }
-    
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension GetInfoView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.section % 2 == 0 {
+        switch sections[indexPath.section] {
+        case .header:
             return CGSize(width: collectionView.bounds.width, height: 40)
+        case .options:
+            let totalWidth = collectionView.bounds.width
+            let minItemWidth: CGFloat = 160
+            let spacing: CGFloat = 10
+            let columns = max(Int(totalWidth / minItemWidth), 1)
+            let totalSpacing = CGFloat(columns - 1) * spacing
+            let availableWidth = totalWidth - totalSpacing
+            let itemWidth = floor(availableWidth / CGFloat(columns))
+            return CGSize(width: itemWidth, height: 48)
         }
         
         let totalWidth = collectionView.bounds.width

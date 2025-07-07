@@ -23,7 +23,7 @@ class GetInfoViewController: SuperViewController {
     
     private func setupView() {
         getInfoView.delegate = self
-        getInfoView.configure(sections: viewModel.sections, selectedIndices: viewModel.selectedIndices)
+        getInfoView.configure(sectionData: viewModel.sections, selectedIndices: viewModel.selectedIndices)
     }
     
     private func showValidationAlert() {
@@ -44,15 +44,15 @@ class GetInfoViewController: SuperViewController {
 
 extension GetInfoViewController: GetInfoViewDelegate {
     
+    func didSelectDateOfBirth(_ date: Date) {
+        viewModel.selectedDOB = date
+    }
+    
     func didTapNext() {
         guard viewModel.isValid else {
             showValidationAlert()
             return
         }
-    }
-    
-    func didSelectDOB(_ date: Date) {
-        viewModel.selectedDOB = date
     }
     
     func didUpdateSelection(section: Int, index: Int?) {
