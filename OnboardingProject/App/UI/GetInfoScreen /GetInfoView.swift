@@ -10,7 +10,6 @@ import UIKit
 // MARK: - GetInfoViewDelegate
 protocol GetInfoViewDelegate: AnyObject {
     
-    func didTapNext()
     func didSelectDOB(_ date: Date)
     func didUpdateSelection(section: Int, index: Int?)
 }
@@ -41,7 +40,6 @@ class GetInfoView: UIView {
         button.backgroundColor = UIColor(resource: .primary)
         button.setTitleColor(.white, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         button.setCornerRadius(18)
         button.setBorder(width: 0.5, color: .lightGray)
         return button
@@ -52,7 +50,6 @@ class GetInfoView: UIView {
     
     private var sections: [[String]] = []
     private var selectedIndices: [Int?] = []
-    
     
     // MARK: - Lifecycle
     override func awakeFromNib() {
@@ -106,11 +103,7 @@ class GetInfoView: UIView {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.registerNib(for: OptionCell.self)
-        collectionView.register(
-            UICollectionReusableView.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: AppConstants.GetInfoView.headerReuseIdentifier
-        )
+        collectionView.registerNib(for: OptionHeaderCell.self)
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -151,7 +144,6 @@ class GetInfoView: UIView {
         ])
     }
     
-    
     // MARK: - Actions
     @objc
     private func dobTapped() {
@@ -172,11 +164,6 @@ class GetInfoView: UIView {
         delegate?.didSelectDOB(sender.date)
         hideDatePicker()
     }
-    
-    @objc
-    private func nextButtonTapped() {
-        delegate?.didTapNext()
-    }
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
@@ -187,16 +174,22 @@ extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return sections[section].count
+        return sections[section].count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.item == 0 {
+            let cell: OptionHeaderCell = collectionView.dequeueCell(for: indexPath)
+            cell.configure(title: LocalizationKey.GetInfo.header.localized)
+            return cell
+        }
+        
         let cell: OptionCell = collectionView.dequeueCell(for: indexPath)
-        let text = sections[indexPath.section][indexPath.item]
-        let isSelected = selectedIndices[indexPath.section] == indexPath.item
+        let text = sections[indexPath.section][indexPath.item - 1]
+        let isSelected = selectedIndices[indexPath.section] == (indexPath.item - 1)
         cell.configure(with: text, isSelected: isSelected)
         cell.optionSelected = { [weak self] in
-            self?.updateSelection(for: indexPath.section, index: indexPath.item)
+            self?.updateSelection(for: indexPath.section, index: indexPath.item - 1)
         }
         return cell
     }
@@ -207,44 +200,13 @@ extension GetInfoView: UICollectionViewDataSource, UICollectionViewDelegate, UIC
     }
     
     func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader else {
-            return UICollectionReusableView()
-        }
-        
-        let header = collectionView.dequeueReusableSupplementaryView(
-            ofKind: kind,
-            withReuseIdentifier: AppConstants.GetInfoView.headerReuseIdentifier,
-            for: indexPath
-        )
-        header.subviews.forEach { $0.removeFromSuperview() }
-        
-        let label = UILabel()
-        label.text = LocalizationKey.GetInfo.header.localized
-        label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        header.addSubview(label)
-        
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: header.topAnchor),
-            label.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 16),
-            label.trailingAnchor.constraint(equalTo: header.trailingAnchor),
-            label.bottomAnchor.constraint(equalTo: header.bottomAnchor)
-        ])
-        
-        return header
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 36)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        if indexPath.item == 0 {
+            return CGSize(width: collectionView.bounds.width, height: 40)
+        }
+        
         let totalWidth = collectionView.bounds.width
         let minItemWidth: CGFloat = 160
         let spacing: CGFloat = 10

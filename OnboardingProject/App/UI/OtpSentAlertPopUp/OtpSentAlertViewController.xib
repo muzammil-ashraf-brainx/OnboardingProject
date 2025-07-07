@@ -64,7 +64,7 @@ text to show here that code has been sent to email </string>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <state key="normal" title="Ok"/>
                             <connections>
-                                <action selector="okButtonTapped:" destination="i5M-Pr-FkT" eventType="touchUpInside" id="joi-bA-eBj"/>
+                                <action selector="okButtonTapped:" destination="-1" eventType="touchUpInside" id="JyP-tO-84a"/>
                             </connections>
                         </button>
                     </subviews>

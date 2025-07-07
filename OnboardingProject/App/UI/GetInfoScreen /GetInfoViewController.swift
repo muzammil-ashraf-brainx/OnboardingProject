@@ -43,6 +43,7 @@ class GetInfoViewController: SuperViewController {
 // MARK: - GetInfoViewDelegate
 
 extension GetInfoViewController: GetInfoViewDelegate {
+    
     func didTapNext() {
         guard viewModel.isValid else {
             showValidationAlert()
@@ -58,6 +59,5 @@ extension GetInfoViewController: GetInfoViewDelegate {
         viewModel.selectedIndices[section] = index
         getInfoView.updateSelection(section: section, index: index)
     }
-    
 }
 

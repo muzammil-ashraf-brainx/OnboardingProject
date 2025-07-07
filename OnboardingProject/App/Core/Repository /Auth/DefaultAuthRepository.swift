@@ -146,7 +146,7 @@ extension DefaultAuthRepository {
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
-            headers.forEach { request.setValue($1, forHTTPHeaderField: $0) }
+            headers.forEach { request.setValue($1, forHTTPHeaderField: $0)}
             
             return request
         }

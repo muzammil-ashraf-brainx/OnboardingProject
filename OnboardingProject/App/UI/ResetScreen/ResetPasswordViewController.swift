@@ -11,7 +11,6 @@ import UIKit
 class ResetPasswordViewController: SuperViewController {
     
     // MARK: - IBOutlets 
-    @IBOutlet weak var proceedButtonView: UIView!
     @IBOutlet var resetPasswordView: ResetPasswordView!
     
     private let viewModel = ResetPasswordViewModel()
@@ -19,12 +18,7 @@ class ResetPasswordViewController: SuperViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        keyboardResponsiveView = proceedButtonView
-        
-#if DEBUG
-        resetPasswordView.resetPasswordEmailTextField.text = "muz@gmail.com"
-#endif
-        
+        keyboardResponsiveView = resetPasswordView .proceedButtonView
         bindViewModel()
     }
     
@@ -52,10 +46,10 @@ class ResetPasswordViewController: SuperViewController {
     }
     
     // MARK: - Actions
-    @IBAction func resetPasswordButtonTapped(_ sender: Any) {
+    @IBAction
+    func resetPasswordButtonTapped(_ sender: Any) {
         guard let email = resetPasswordView.registeredEmail else { return }
         viewModel.resetPassword(email: email)
     }
-    
 }
 

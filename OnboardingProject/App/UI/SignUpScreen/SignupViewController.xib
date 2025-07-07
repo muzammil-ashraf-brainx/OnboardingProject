@@ -11,7 +11,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SignupViewController" customModule="OnboardingProject" customModuleProvider="target">
             <connections>
-                <outlet property="scrollView" destination="tYU-jo-G5g" id="5Iv-Sp-3le"/>
                 <outlet property="signupView" destination="i5M-Pr-FkT" id="4rD-ca-fAr"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -251,6 +250,7 @@
                 <outlet property="emailTextField" destination="PYJ-se-E7R" id="qjJ-ax-fJp"/>
                 <outlet property="googleSignupBtn" destination="9pB-Dw-sb2" id="2za-m7-pph"/>
                 <outlet property="passwordTextField" destination="sQu-va-cT3" id="vFv-iA-Oq4"/>
+                <outlet property="scrollView" destination="tYU-jo-G5g" id="Dpi-Jc-KLP"/>
                 <outlet property="usernameTextField" destination="uho-Ro-Vd9" id="pS7-jh-vMa"/>
             </connections>
             <point key="canvasLocation" x="-48.091603053435115" y="19.718309859154932"/>

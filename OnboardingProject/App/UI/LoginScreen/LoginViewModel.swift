@@ -71,7 +71,9 @@ class LoginViewModel {
 
 // MARK: - Validation Errors
 extension LoginViewModel {
+    
     enum ValidationError: LocalizedError {
+        
         case usernameEmpty
         case passwordEmpty
         case passwordTooShort
@@ -87,5 +89,4 @@ extension LoginViewModel {
             }
         }
     }
-    
 }

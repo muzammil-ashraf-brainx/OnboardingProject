@@ -8,9 +8,9 @@
 import UIKit
 
 class LoginViewController: SuperViewController {
+    
     // MARK: - Outlets
     @IBOutlet private weak var loginView: LoginView!
-    @IBOutlet private weak var formContainerView: UIView!
     
     // MARK: - Properties
     private let viewModel = LoginViewModel()
@@ -18,7 +18,7 @@ class LoginViewController: SuperViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        keyboardResponsiveView = formContainerView
+        keyboardResponsiveView = loginView.formContainerView
         bindViewModel()
     }
     
@@ -51,17 +51,21 @@ class LoginViewController: SuperViewController {
     }
     
     // MARK: - Actions
-    @IBAction private func loginButtonTapped(_ sender: UIButton) {
-        viewModel.login(username: loginView.username, password: loginView.password)    }
+    @IBAction
+    private func loginButtonTapped(_ sender: UIButton) {
+        viewModel.login(username: loginView.username, password: loginView.password)
+    }
     
-    @IBAction private func forgetPasswordTapped(_ sender: UIButton) {
+    @IBAction
+    private func forgetPasswordTapped(_ sender: UIButton) {
         let resetPasswordVC = ResetPasswordViewController()
         navigationController?.pushViewController(resetPasswordVC, animated: true)
     }
     
-    @IBAction func createAccountButtonTapped(_ sender: Any) {
+    @IBAction
+    func createAccountButtonTapped(_ sender: Any) {
         let signupVC = SignupViewController()
-        navigationController?.pushViewController(signupVC, animated: true)    }
-    
+        navigationController?.pushViewController(signupVC, animated: true)
+    }
 }
 

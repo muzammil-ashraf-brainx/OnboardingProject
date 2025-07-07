@@ -12,7 +12,7 @@ class OtpSentAlertViewController: UIViewController {
     // MARK: - IBOutlet
     @IBOutlet var otpSentAlertView: OtpSentAlertView!
     
-    private var email: String = ""
+    private var email: String = .empty
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -33,6 +33,10 @@ class OtpSentAlertViewController: UIViewController {
         }
     }
     
+    @IBAction private func okButtonTapped(_ sender: UIButton) {
+        otpSentAlertView.onOk?()
+    }
+    
     private func navigateToOtpVerification() {
         let otpVC = OtpVerificationViewController()
         otpVC.configure(email: email)
@@ -45,6 +49,5 @@ class OtpSentAlertViewController: UIViewController {
             navigationController?.pushViewController(otpVC, animated: true)
         }
     }
-    
 }
 

@@ -12,7 +12,6 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OtpVerificationViewController" customModule="OnboardingProject" customModuleProvider="target">
             <connections>
                 <outlet property="otpVerificationView" destination="i5M-Pr-FkT" id="byW-0P-hLI"/>
-                <outlet property="verifyButtonView" destination="JuI-0e-ZQa" id="DqD-yc-tQU"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -144,6 +143,7 @@
                 <outlet property="resendInfoLabel" destination="GUX-tU-XjA" id="toY-Zp-Rg0"/>
                 <outlet property="stepLabel" destination="9uU-Np-5Zy" id="jrP-AS-InZ"/>
                 <outlet property="verifyButton" destination="pyd-w1-fUu" id="x3b-Cl-fCs"/>
+                <outlet property="verifyButtonView" destination="JuI-0e-ZQa" id="KDb-UA-PUE"/>
                 <outletCollection property="codeTextFields" destination="VRq-nj-zaR" collectionClass="NSMutableArray" id="lIV-gm-aP4"/>
                 <outletCollection property="codeTextFields" destination="zTW-Sz-yq9" collectionClass="NSMutableArray" id="qcR-yB-Hom"/>
                 <outletCollection property="codeTextFields" destination="gNg-KQ-wbY" collectionClass="NSMutableArray" id="eCR-Wq-geB"/>

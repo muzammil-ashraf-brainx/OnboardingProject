@@ -55,6 +55,5 @@ class OptionCell: UICollectionViewCell {
         radioLabel.text = text
         radioButton.isSelected = isSelected
     }
-    
 }
 

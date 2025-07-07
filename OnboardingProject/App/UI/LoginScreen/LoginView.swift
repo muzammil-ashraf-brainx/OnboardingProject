@@ -13,6 +13,7 @@ import UIKit
 class LoginView: UIView {
     
     // MARK: - Outlets
+    @IBOutlet private(set) weak var formContainerView: UIView!
     @IBOutlet private weak var userNameTextField: UITextField!
     @IBOutlet private weak var passwordTextField: UITextField!
     @IBOutlet private weak var forgetPasswordButton: UIButton!

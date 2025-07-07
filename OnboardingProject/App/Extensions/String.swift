@@ -9,6 +9,9 @@ import Foundation
 
 extension String {
     
+    static let empty = ""
+    var isNotEmpty: Bool { !isEmpty }
+    
     var isValidEmail: Bool {
         let emailRegEx = AppConstants.Regex.email
         let predicate = NSPredicate(format: "SELF MATCHES %@", emailRegEx)

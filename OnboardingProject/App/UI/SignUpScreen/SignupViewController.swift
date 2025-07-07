@@ -10,7 +10,6 @@ import UIKit
 class SignupViewController: SuperViewController {
     
     // MARK: - Outlets
-    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var signupView: SignupView!
     
     // MARK: - Properties
@@ -21,14 +20,11 @@ class SignupViewController: SuperViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        keyboardResponsiveScrollView = scrollView
-        
+        keyboardResponsiveScrollView = signupView.scrollView
         signupView.emailTextField.delegate = self
         signupView.usernameTextField.delegate = self
         signupView.passwordTextField.delegate = self
         signupView.confirmPasswordTextField.delegate = self
-        
         bindViewModel()
     }
     
@@ -52,7 +48,8 @@ class SignupViewController: SuperViewController {
         }
         
         viewModel.onSignupSuccess = { [weak self] message in
-            let getInfoVC =  GetInfoViewController();           self?.navigationController?.pushViewController(getInfoVC, animated: true)
+            let getInfoVC = GetInfoViewController()
+            self?.navigationController?.pushViewController(getInfoVC, animated: true)
         }
         
         viewModel.onSignupFailure = { [weak self] errorMessage in
@@ -76,15 +73,24 @@ extension SignupViewController: SignupViewDelegate {
     }
     
     // MARK: - Actions Methods
-    @IBAction func googleSignupTapped(_ sender: UIButton) {
-        showAlert(title: LocalizationKey.AlertTitle.googleSignup.localized, message: LocalizationKey.AlertMessage.googleSignup.localized)
+    @IBAction
+    func googleSignupTapped(_ sender: UIButton) {
+        showAlert(
+            title: LocalizationKey.AlertTitle.googleSignup.localized,
+            message: LocalizationKey.AlertMessage.googleSignup.localized
+        )
     }
     
-    @IBAction func appleSignupTapped(_ sender: UIButton) {
-        showAlert(title: LocalizationKey.AlertTitle.appleSignup.localized, message: LocalizationKey.AlertMessage.appleSignup.localized)
+    @IBAction
+    func appleSignupTapped(_ sender: UIButton) {
+        showAlert(
+            title: LocalizationKey.AlertTitle.appleSignup.localized,
+            message: LocalizationKey.AlertMessage.appleSignup.localized
+        )
     }
     
-    @IBAction func loginNowButtonTapped(_ sender: Any) {
+    @IBAction
+    func loginNowButtonTapped(_ sender: Any) {
         let loginVC = LoginViewController()
         navigationController?.pushViewController(loginVC, animated: true)
     }
@@ -92,6 +98,7 @@ extension SignupViewController: SignupViewDelegate {
 
 // MARK: - UITextFieldDelegate
 extension SignupViewController: UITextFieldDelegate {
+    
     func textFieldDidBeginEditing(_ textField: UITextField) {
         activeField = textField
     }

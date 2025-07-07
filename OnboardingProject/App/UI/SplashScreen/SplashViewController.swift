@@ -94,5 +94,4 @@ class SplashViewController: UIViewController {
         view.window?.layer.add(transition, forKey: kCATransition)
         addFadeTransition(to: view.window?.layer ?? view.layer)
     }
-    
 }

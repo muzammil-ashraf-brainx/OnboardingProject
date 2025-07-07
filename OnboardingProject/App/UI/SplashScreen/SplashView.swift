@@ -32,5 +32,4 @@ class SplashView: UIView {
     private func setBtnsTitleText() {
         lblBtnsTitle.text = LocalizationKey.Splash.buttonTitle.localized
     }
-    
 }

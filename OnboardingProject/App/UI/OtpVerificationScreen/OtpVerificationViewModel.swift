@@ -9,7 +9,6 @@ import Foundation
 
 class OTPViewModel {
     
-    
     var otpCode: String = "" {
         didSet {
             otpModel = OTPModel(code: otpCode)
@@ -23,7 +22,7 @@ class OTPViewModel {
     
     var updateUI: (() -> Void)?
     var onError: ((String) -> Void)?
-    var onSuccess: ((String) -> Void)? 
+    var onSuccess: ((String) -> Void)?
     var onResendSuccess: (() -> Void)?
     
     var isValidOTP: Bool {
@@ -51,7 +50,7 @@ class OTPViewModel {
             }
         }
     }
-
+    
     func resendOTP() {
         authRepo.resetPassword(email: userEmail) { [weak self] result in
             switch result {
@@ -62,5 +61,4 @@ class OTPViewModel {
             }
         }
     }
-    
 }

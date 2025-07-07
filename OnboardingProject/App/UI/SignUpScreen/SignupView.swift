@@ -11,7 +11,6 @@ protocol SignupViewDelegate: AnyObject {
     
     func didBeginEditing(_ textField: UITextField)
     func didEndEditing(_ textField: UITextField)
-    
 }
 
 class SignupView: UIView {
@@ -22,6 +21,8 @@ class SignupView: UIView {
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var googleSignupBtn: UIButton!
     @IBOutlet weak var appleSignupBtn: UIButton!
+    @IBOutlet private(set) weak var scrollView: UIScrollView!
+    
     
     weak var delegate: SignupViewDelegate?
     
@@ -46,5 +47,4 @@ class SignupView: UIView {
         appleSignupBtn?.setBorder(width: 0.5, color: .lightGray)
         
     }
-    
 }

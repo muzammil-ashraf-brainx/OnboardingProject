@@ -10,17 +10,21 @@ import UIKit
 class OtpSentAlertView: UIView {
     
     // MARK: - Outlets
-    
-    @IBOutlet weak var containerView: UIView!
+    @IBOutlet private weak var containerView: UIView!
     @IBOutlet private weak var messageLabel: UILabel!
     @IBOutlet private weak var okButton: UIButton!
     
     // MARK: - Properties
     var onOk: (() -> Void)?
     
+    // MARK: - Lifecycle
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        setupUI()
+    }
+    
     // MARK: - Setup
     func configure(withEmail email: String?) {
-        setupUI()
         messageLabel.text = String(format: LocalizationKey.OTP.sentMessage.localized, email ?? "")
     }
     
@@ -32,11 +36,5 @@ class OtpSentAlertView: UIView {
         okButton.setCornerRadius(18)
         okButton.setBorder(width: 0.5, color: .lightGray)
     }
-    
-    // MARK: - Actions
-    @IBAction private func okButtonTapped(_ sender: UIButton) {
-        onOk?()
-    }
-    
 }
 

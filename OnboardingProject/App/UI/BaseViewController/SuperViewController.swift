@@ -30,7 +30,6 @@ class SuperViewController: UIViewController {
     }
     
     // MARK: - Public Methods
-    
     func showAlert(
         title: String,
         message: String,
@@ -45,7 +44,6 @@ class SuperViewController: UIViewController {
     }
     
     // MARK: - Private Methods (Keyboard Registration)
-    
     private func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(
             self,
@@ -62,7 +60,6 @@ class SuperViewController: UIViewController {
     }
     
     // MARK: - Private Methods (Keyboard Handling)
-    
     @objc private func handleKeyboardWillShow(_ notification: Notification) {
         guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
               let animationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double,
@@ -103,7 +100,6 @@ class SuperViewController: UIViewController {
     }
     
     // MARK: - Private Methods (Keyboard Dismissal)
-    
     private func setupDismissKeyboardGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissTheKeyboard))
         tapGesture.cancelsTouchesInView = false
@@ -114,6 +110,5 @@ class SuperViewController: UIViewController {
     private func dismissTheKeyboard() {
         view.endEditing(true)
     }
-    
 }
 

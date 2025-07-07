@@ -8,30 +8,29 @@
 import UIKit
 
 class OtpVerificationViewController: SuperViewController {
-
+    
     // MARK: - Outlets
     @IBOutlet weak var otpVerificationView: OtpVerificationView!
-    @IBOutlet weak var verifyButtonView: UIView!
-
+    
     // MARK: - Properties
     private var viewModel: OTPViewModel!
     private var resetURL: String?
     private var email: String!
-
+    
     // MARK: - Configure
     func configure(email: String) {
         self.email = email
     }
-
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel = OTPViewModel(email: email)
         otpVerificationView.delegate = self
-        keyboardResponsiveView = verifyButtonView
+        keyboardResponsiveView = otpVerificationView.verifyButtonView
         setupBindings()
     }
-
+    
     // MARK: - ViewModel Bindings
     private func setupBindings() {
         viewModel.updateUI = { [weak self] in
@@ -39,7 +38,7 @@ class OtpVerificationViewController: SuperViewController {
                 self?.updateVerifyButtonState()
             }
         }
-
+        
         viewModel.onSuccess = { [weak self] resetURL in
             DispatchQueue.main.async {
                 self?.resetURL = resetURL
@@ -53,7 +52,7 @@ class OtpVerificationViewController: SuperViewController {
                 )
             }
         }
-
+        
         viewModel.onError = { [weak self] errorMessage in
             DispatchQueue.main.async {
                 self?.showAlert(
@@ -62,20 +61,20 @@ class OtpVerificationViewController: SuperViewController {
                 )
             }
         }
-
+        
         viewModel.onResendSuccess = { [weak self] in
             DispatchQueue.main.async {
                 self?.navigateToOtpSentAlert(email: self?.email ?? "")
             }
         }
-
+        
         updateVerifyButtonState()
     }
-
+    
     private func updateVerifyButtonState() {
         otpVerificationView.verifyButton.isEnabled = viewModel.isValidOTP
     }
-
+    
     // MARK: - Navigation
     private func navigateToOtpSentAlert(email: String) {
         let alertVC =  OtpSentAlertViewController()
@@ -86,23 +85,23 @@ class OtpVerificationViewController: SuperViewController {
     }
     
     // MARK: - Actions
-    @IBAction func resendButtonTapped(_ sender: UIButton) {
+    @IBAction
+    func resendButtonTapped(_ sender: UIButton) {
         viewModel.resendOTP()
-
     }
     
-    @IBAction func verifyButtonTapped(_ sender: UIButton) {
+    @IBAction
+    func verifyButtonTapped(_ sender: UIButton) {
         viewModel.verifyOTP()
-
     }
-
+    
 }
 
 // MARK: - OtpVerificationViewDelegate
 extension OtpVerificationViewController: OtpVerificationViewDelegate {
+    
     func otpTextDidChange(_ code: String) {
         viewModel.otpCode = code
     }
-    
 }
 

@@ -16,6 +16,5 @@ class GetInfoViewModel {
     var isValid: Bool {
         return selectedIndices.allSatisfy { $0 != nil } && selectedDOB != nil
     }
-    
 }
 

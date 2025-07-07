@@ -11,7 +11,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginViewController" customModule="OnboardingProject" customModuleProvider="target">
             <connections>
-                <outlet property="formContainerView" destination="XiI-Jm-54s" id="qtd-54-0cp"/>
                 <outlet property="loginView" destination="i5M-Pr-FkT" id="7Ra-9X-ApU"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -150,6 +149,7 @@
             </constraints>
             <connections>
                 <outlet property="forgetPasswordButton" destination="nZl-qj-5HS" id="MVZ-TE-6Ha"/>
+                <outlet property="formContainerView" destination="XiI-Jm-54s" id="8Nk-mA-cFN"/>
                 <outlet property="loginButton" destination="E0A-Mp-4l5" id="6xd-6G-i8N"/>
                 <outlet property="passwordTextField" destination="nHB-xN-vtf" id="wdC-yW-Cg3"/>
                 <outlet property="userNameTextField" destination="wrj-Bo-Kxu" id="eKG-sq-fWi"/>
