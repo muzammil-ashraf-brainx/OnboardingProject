@@ -5,6 +5,7 @@
 //  Created by BrainX iOS Dev on 05/06/2025.
 //
 
+import Combine
 import Foundation
 
 class SignupViewModel {
@@ -12,9 +13,9 @@ class SignupViewModel {
     // MARK: - Properties
     private let authRepo: AuthRepository
     
-    var onSignupSuccess: ((String) -> Void)?
-    var onSignupFailure: ((String) -> Void)?
-    var onValidationFailure: ((ValidationError) -> Void)?
+    let signupSuccess = PassthroughSubject<String, Never>()
+    let signupFailure = PassthroughSubject<String, Never>()
+    let validationFailure = PassthroughSubject<ValidationError, Never>()
     
     // MARK: - Initialization
     init(authRepo: AuthRepository = DefaultAuthRepository()) {
@@ -35,7 +36,7 @@ class SignupViewModel {
             confirmPassword: trimmedConfirmPassword
         )
         {
-            onValidationFailure?(error)
+            validationFailure.send(error)
             return
         }
         
@@ -88,9 +89,9 @@ class SignupViewModel {
                 case .success(let response):
                     let name = response.data?.user?.username ?? username
                     let message = "\(LocalizationKey.Validation.signupSuccess), \(name)."
-                    self?.onSignupSuccess?(message)
+                    self?.signupSuccess.send(message)
                 case .failure(let error):
-                    self?.onSignupFailure?(error.localizedDescription)
+                    self?.signupFailure.send(error.localizedDescription)
                 }
             }
         }

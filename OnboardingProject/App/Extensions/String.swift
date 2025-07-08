@@ -17,5 +17,4 @@ extension String {
         let predicate = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
         return predicate.evaluate(with: self)
     }
-    
 }

@@ -5,7 +5,7 @@
 //  Created by BrainX iOS Dev on 30/06/2025.
 //
 
-
+import Combine
 import UIKit
 
 class ResetPasswordViewController: SuperViewController {
@@ -14,6 +14,7 @@ class ResetPasswordViewController: SuperViewController {
     @IBOutlet var resetPasswordView: ResetPasswordView!
     
     private let viewModel = ResetPasswordViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -24,16 +25,20 @@ class ResetPasswordViewController: SuperViewController {
     
     // MARK: - Bind ViewModel
     private func bindViewModel() {
-        viewModel.onResetSuccess = { [weak self] verifiedEmail in
-            self?.showOtpSentAlert(email: verifiedEmail)
-        }
+        viewModel.resetSuccess
+            .sink { [weak self] verifiedEmail in
+                self?.showOtpSentAlert(email: verifiedEmail)
+            }
+            .store(in: &cancellables)
         
-        viewModel.onResetFailure = { [weak self] errorMessage in
-            self?.showAlert(
-                title: LocalizationKey.AlertTitle.error.localized,
-                message: errorMessage
-            )
-        }
+        viewModel.resetFailure
+            .sink { [weak self] errorMessage in
+                self?.showAlert(
+                    title: LocalizationKey.AlertTitle.error.localized,
+                    message: errorMessage
+                )
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - Navigation

@@ -5,6 +5,7 @@
 //  Created by BrainX iOS Dev on 16/05/2025.
 //
 
+import Combine
 import UIKit
 
 class SignupViewController: SuperViewController {
@@ -15,7 +16,7 @@ class SignupViewController: SuperViewController {
     // MARK: - Properties
     private var activeField: UIView?
     private let viewModel = SignupViewModel()
-    
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -29,7 +30,8 @@ class SignupViewController: SuperViewController {
     }
     
     // MARK: - Actions
-    @IBAction func signupBtnTapped(_ sender: Any) {
+    @IBAction
+    func signupBtnTapped(_ sender: Any) {
         viewModel.signup(
             email: signupView.email,
             username: signupView.username,
@@ -40,24 +42,30 @@ class SignupViewController: SuperViewController {
     
     // MARK: - Bind ViewModel
     private func bindViewModel() {
-        viewModel.onValidationFailure = { [weak self] error in
-            self?.showAlert(
-                title: LocalizationKey.AlertTitle.validationFailed.localized,
-                message: error.localizedDescription
-            )
-        }
+        viewModel.validationFailure
+            .sink { [weak self] error in
+                self?.showAlert(
+                    title: LocalizationKey.AlertTitle.validationFailed.localized,
+                    message: error.localizedDescription
+                )
+            }
+            .store(in: &cancellables)
         
-        viewModel.onSignupSuccess = { [weak self] message in
-            let getInfoVC = GetInfoViewController()
-            self?.navigationController?.pushViewController(getInfoVC, animated: true)
-        }
+        viewModel.signupSuccess
+            .sink { [weak self] message in
+                let getInfoVC = GetInfoViewController()
+                self?.navigationController?.pushViewController(getInfoVC, animated: true)
+            }
+            .store(in: &cancellables)
         
-        viewModel.onSignupFailure = { [weak self] errorMessage in
-            self?.showAlert(
-                title: LocalizationKey.AlertTitle.signupFailed.localized,
-                message: errorMessage
-            )
-        }
+        viewModel.signupFailure
+            .sink { [weak self] errorMessage in
+                self?.showAlert(
+                    title: LocalizationKey.AlertTitle.signupFailed.localized,
+                    message: errorMessage
+                )
+            }
+            .store(in: &cancellables)
     }
 }
 

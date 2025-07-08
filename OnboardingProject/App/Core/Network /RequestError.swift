@@ -13,6 +13,12 @@ enum RequestError: LocalizedError {
     case failedToEncodeParameters
     case invalidResponse
     case noData
+    case badRequest
+    case unauthorized
+    case forbidden
+    case notFound
+    case rateLimited
+    case serverError
     case unknownServerError
     
     var errorDescription: String? {
@@ -25,6 +31,18 @@ enum RequestError: LocalizedError {
             return LocalizationKey.RequestError.invalidResponse.localized
         case .noData:
             return LocalizationKey.RequestError.noData.localized
+        case .badRequest:
+            return LocalizationKey.RequestError.badRequest.localized
+        case .unauthorized:
+            return LocalizationKey.RequestError.unauthorized.localized
+        case .forbidden:
+            return LocalizationKey.RequestError.forbidden.localized
+        case .notFound:
+            return LocalizationKey.RequestError.notFound.localized
+        case .rateLimited:
+            return LocalizationKey.RequestError.rateLimited.localized
+        case .serverError:
+            return LocalizationKey.RequestError.serverError.localized
         case .unknownServerError:
             return LocalizationKey.RequestError.unknown.localized
         }
@@ -32,6 +50,7 @@ enum RequestError: LocalizedError {
 }
 
 struct APIError: LocalizedError {
+    
     let message: String
     
     var errorDescription: String? {
@@ -49,9 +68,8 @@ struct APIError: LocalizedError {
            let errorMessage = json[BackendKeys.errorMessage] {
             self.message = errorMessage
         } else {
-            self.message = RequestError.unknownServerError.localizedDescription
+            self.message = LocalizationKey.RequestError.unknown.localized
         }
     }
-    
 }
 

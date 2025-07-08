@@ -5,13 +5,15 @@
 //  Created by BrainX iOS Dev on 23/06/2025.
 //
 
+import Combine
 import Foundation
 
 class ResetPasswordViewModel {
     private let authRepo: AuthRepository
     
-    var onResetSuccess: ((String) -> Void)?
-    var onResetFailure: ((String) -> Void)?
+    // MARK: - Publishers
+        let resetSuccess = PassthroughSubject<String, Never>()
+        let resetFailure = PassthroughSubject<String, Never>()
     
     // MARK: - Init
     init(authRepo: AuthRepository = DefaultAuthRepository()) {
@@ -44,9 +46,9 @@ class ResetPasswordViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    self?.onResetSuccess?(trimmedEmail)
+                    self?.resetSuccess.send(trimmedEmail)
                 case .failure(let error):
-                    self?.onResetFailure?(error.localizedDescription)
+                    self?.resetFailure.send(error.localizedDescription)
                 }
             }
         }

@@ -5,9 +5,17 @@
 //  Created by BrainX iOS Dev on 16/05/2025.
 //
 
+import Alamofire
 import Foundation
 
 class DefaultAuthRepository: AuthRepository {
+    
+    private let session: Session
+    
+    init(session: Session = NetworkSession.shared) {
+        self.session = session
+    }
+    
     
     // MARK: - Public API Calls
     func signup(
@@ -56,40 +64,53 @@ class DefaultAuthRepository: AuthRepository {
     
     // MARK: - Generic Request Handler
     private func executeRequest<T: Decodable>(
-        _ requestType: Request,
+        _ request: Request,
         completion: @escaping (Result<T, Error>) -> Void
     ) {
-        do {
-            let request = try requestType.getURLRequest()
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    return completion(.failure(error))
-                }
-                
-                guard let data = data else {
-                    return completion(.failure(RequestError.noData))
-                }
-                
-                guard let httpResponse = response as? HTTPURLResponse,
-                      (200...299).contains(httpResponse.statusCode) else {
-                    return completion(.failure(APIError(data: data)))
-                }
-                
-                do {
-                    let decoded = try JSONDecoder().decode(T.self, from: data)
-                    completion(.success(decoded))
-                } catch {
-                    completion(.failure(error))
-                }
-            }.resume()
-            
-        } catch {
-            completion(.failure(error))
+        guard let url = request.url else {
+            return completion(.failure(RequestError.invalidURL))
+        }
+        
+        session.request(
+            url,
+            method: request.method,
+            parameters: request.parameters,
+            encoding: JSONEncoding.default,
+            headers: HTTPHeaders(request.headers)
+        )
+        .validate()
+        .responseDecodable(of: T.self) { response in
+            switch response.result {
+            case .success(let value):
+                completion(.success(value))
+            case .failure:
+                completion(.failure(self.mapError(from: response)))
+            }
+        }
+    }
+    
+    private func mapError<T>(from response: AFDataResponse<T>) -> Error {
+        if let data = response.data {
+            return APIError(data: data)
+        }
+        
+        guard let statusCode = response.response?.statusCode else {
+            return RequestError.unknownServerError
+        }
+        
+        switch statusCode {
+        case 400: return RequestError.badRequest
+        case 401: return RequestError.unauthorized
+        case 403: return RequestError.forbidden
+        case 404: return RequestError.notFound
+        case 429: return RequestError.rateLimited
+        case 500...599: return RequestError.serverError
+        default: return RequestError.unknownServerError
         }
     }
 }
 
+// MARK: - API Request Definitions
 extension DefaultAuthRepository {
     
     // MARK: - Auth API Requests
@@ -112,8 +133,15 @@ extension DefaultAuthRepository {
             }
         }
         
-        
-        var method: HTTPMethod { .post }
+        var method: Alamofire.HTTPMethod {
+            switch self {
+            case .signup,
+                    .login,
+                    .resetPassword,
+                    .verifyOtp:
+                return .post
+            }
+        }
         
         var headers: [String: String] {
             [NetworkHeaders.contentType(): NetworkHeaderValues.json()]
@@ -134,22 +162,15 @@ extension DefaultAuthRepository {
                     "password": password
                 ]
             case let .resetPassword(email):
-                return ["email": email]
+                return [
+                    "email": email
+                ]
             case let .verifyOtp(code):
-                return ["otp": code]
+                return [
+                    "otp": code
+                ]
             }
         }
-        
-        func getURLRequest() throws -> URLRequest {
-            guard let url = url else { throw RequestError.invalidURL }
-            
-            var request = URLRequest(url: url)
-            request.httpMethod = method.rawValue
-            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
-            headers.forEach { request.setValue($1, forHTTPHeaderField: $0)}
-            
-            return request
-        }
     }
-    
 }
+

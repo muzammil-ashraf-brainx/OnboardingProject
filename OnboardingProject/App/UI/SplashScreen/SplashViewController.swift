@@ -5,6 +5,7 @@
 //  Created by BrainX iOS Dev on 16/05/2025.
 //
 
+import Combine
 import UIKit
 
 class SplashViewController: UIViewController {
@@ -15,6 +16,7 @@ class SplashViewController: UIViewController {
     // MARK: - Properties
     private let viewModel: SplashViewModel
     private let transitionDuration: TimeInterval = 0.5
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
     init(viewModel: SplashViewModel) {
@@ -46,9 +48,11 @@ class SplashViewController: UIViewController {
     }
     // MARK: - Bindings
     private func setupBindings() {
-        viewModel.onNavigate = { [weak self] destination in
-            self?.navigateTo(destination)
-        }
+        viewModel.navigationPublisher
+            .sink { [weak self] destination in
+                self?.navigateTo(destination)
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - Navigation
