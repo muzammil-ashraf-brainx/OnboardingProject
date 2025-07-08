@@ -7,23 +7,57 @@
 
 import UIKit
 
-class GetInfoViewController: UIViewController {
+// MARK: - GetInfoViewController
 
+class GetInfoViewController: SuperViewController {
+    
+    @IBOutlet weak var getInfoView: GetInfoView!
+    
+    private let viewModel = GetInfoViewModel()
+    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        setupView()
     }
-
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    private func setupView() {
+        getInfoView.delegate = self
+        getInfoView.configure(sectionData: viewModel.sections, selectedIndices: viewModel.selectedIndices)
     }
-    */
-
+    
+    private func showValidationAlert() {
+        let alert = UIAlertController(
+            title: LocalizationKey.AlertTitle.incompleteForm,
+            message: LocalizationKey.AlertMessage.incompleteForm,
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: LocalizationKey.AlertButton.ok.localized, style: .default))
+        
+        present(alert, animated: true)
+    }
+    
 }
+
+// MARK: - GetInfoViewDelegate
+
+extension GetInfoViewController: GetInfoViewDelegate {
+    
+    func didSelectDateOfBirth(_ date: Date) {
+        viewModel.selectedDOB = date
+    }
+    
+    func didTapNext() {
+        guard viewModel.isValid else {
+            showValidationAlert()
+            return
+        }
+    }
+    
+    func didUpdateSelection(section: Int, index: Int?) {
+        viewModel.selectedIndices[section] = index
+        getInfoView.updateSelection(section: section, index: index)
+    }
+}
+

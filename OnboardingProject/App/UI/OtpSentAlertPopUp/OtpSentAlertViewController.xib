@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OtpSentAlertViewController" customModule="OnboardingProject" customModuleProvider="target">
+            <connections>
+                <outlet property="otpSentAlertView" destination="i5M-Pr-FkT" id="xcJ-fJ-dNA"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT" customClass="OtpSentAlertView" customModule="OnboardingProject" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ux0-nq-qBB">
+                    <rect key="frame" x="46.666666666666657" y="222.66666666666663" width="300" height="407"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="prF-2w-tk8">
+                            <rect key="frame" x="100" y="35.000000000000028" width="100" height="100"/>
+                            <subviews>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Message" translatesAutoresizingMaskIntoConstraints="NO" id="dME-Do-Egd">
+                                    <rect key="frame" x="27" y="26" width="46" height="48"/>
+                                </imageView>
+                            </subviews>
+                            <color key="backgroundColor" red="0.84313725490000002" green="0.80784313730000001" blue="0.74117647060000003" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="100" id="2da-Fl-a4C"/>
+                                <constraint firstAttribute="width" constant="100" id="Ate-mH-fAz"/>
+                                <constraint firstAttribute="trailing" secondItem="dME-Do-Egd" secondAttribute="trailing" constant="27" id="CE4-JU-QCC"/>
+                                <constraint firstItem="dME-Do-Egd" firstAttribute="leading" secondItem="prF-2w-tk8" secondAttribute="leading" constant="27" id="fo9-Af-DnF"/>
+                                <constraint firstAttribute="bottom" secondItem="dME-Do-Egd" secondAttribute="bottom" constant="26" id="gAV-KM-xfj"/>
+                                <constraint firstItem="dME-Do-Egd" firstAttribute="top" secondItem="prF-2w-tk8" secondAttribute="top" constant="26" id="nLO-N4-ufe"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="10"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nKo-le-ENs">
+                            <rect key="frame" x="33" y="168.00000000000003" width="234" height="121.99999999999997"/>
+                            <string key="text">text to show here that code has been sent to email 
+text to show here that code has been sent to email 
+text to show here that code has been sent to email </string>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cuN-YY-wHs">
+                            <rect key="frame" x="76" y="325" width="148" height="52"/>
+                            <color key="backgroundColor" red="0.47168284649999997" green="0.36443248389999999" blue="0.10020814090000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="52" id="yl4-ef-83m"/>
+                            </constraints>
+                            <color key="tintColor" red="0.47168284649999997" green="0.36443248389999999" blue="0.10020814090000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="Ok"/>
+                            <connections>
+                                <action selector="okButtonTapped:" destination="-1" eventType="touchUpInside" id="JyP-tO-84a"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="nKo-le-ENs" secondAttribute="trailing" constant="33" id="0ey-6b-Cus"/>
+                        <constraint firstAttribute="trailing" secondItem="cuN-YY-wHs" secondAttribute="trailing" constant="76" id="4fB-6f-lqM"/>
+                        <constraint firstItem="cuN-YY-wHs" firstAttribute="leading" secondItem="ux0-nq-qBB" secondAttribute="leading" constant="76" id="8ax-XC-Ash"/>
+                        <constraint firstItem="nKo-le-ENs" firstAttribute="top" secondItem="prF-2w-tk8" secondAttribute="bottom" constant="33" id="PUS-fb-Rhv"/>
+                        <constraint firstItem="nKo-le-ENs" firstAttribute="leading" secondItem="ux0-nq-qBB" secondAttribute="leading" constant="33" id="WvG-ag-Wz1"/>
+                        <constraint firstItem="cuN-YY-wHs" firstAttribute="top" secondItem="nKo-le-ENs" secondAttribute="bottom" constant="35" id="c97-bC-tSK"/>
+                        <constraint firstItem="prF-2w-tk8" firstAttribute="top" secondItem="ux0-nq-qBB" secondAttribute="top" constant="35" id="d2b-ib-E3e"/>
+                        <constraint firstItem="prF-2w-tk8" firstAttribute="centerX" secondItem="ux0-nq-qBB" secondAttribute="centerX" id="dGN-NY-HtT"/>
+                        <constraint firstAttribute="width" constant="300" id="vh3-Xf-bVO"/>
+                        <constraint firstAttribute="bottom" secondItem="cuN-YY-wHs" secondAttribute="bottom" constant="30" id="xdW-0b-FxB"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="10"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.10518418874172185" colorSpace="custom" customColorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="ux0-nq-qBB" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="R7I-1O-cKI"/>
+                <constraint firstItem="ux0-nq-qBB" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="rkb-GK-asR"/>
+            </constraints>
+            <connections>
+                <outlet property="containerView" destination="ux0-nq-qBB" id="Lgd-6A-a3k"/>
+                <outlet property="messageLabel" destination="nKo-le-ENs" id="VOH-wV-9xQ"/>
+                <outlet property="okButton" destination="cuN-YY-wHs" id="cTT-Rh-g6x"/>
+            </connections>
+            <point key="canvasLocation" x="138" y="-1"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="Message" width="40" height="36"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -9,26 +9,27 @@ import UIKit
 
 class SplashView: UIView {
     
+    // MARK: - Outlets
     @IBOutlet weak var btnSignup: UIButton!
     @IBOutlet weak var btnLogin: UIButton!
     @IBOutlet weak var lblBtnsTitle: UILabel!
     
+    // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
         setupView()
         setBtnsTitleText()
     }
     
-    func setupView() {
-        
-        btnSignup.setupButton()
-        btnLogin.setupButton()
+    // MARK: - Setup Methods
+    private func setupView() {
+        btnSignup.setCornerRadius(18)
+        btnSignup.setBorder(width: 0.5, color: .lightGray)
+        btnLogin.setCornerRadius(18)
+        btnLogin.setBorder(width: 0.5, color: .lightGray)
     }
     
-    func setBtnsTitleText(){
-        lblBtnsTitle.text =  "Get instant updates from a fully energetic community"
+    private func setBtnsTitleText() {
+        lblBtnsTitle.text = LocalizationKey.Splash.buttonTitle.localized
     }
-    
-
 }
-
