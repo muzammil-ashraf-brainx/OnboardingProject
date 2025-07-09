@@ -595,6 +595,17 @@
         }
       }
     },
+    "requestError.badRequest" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bad request"
+          }
+        }
+      }
+    },
     "requestError.failedToEncode" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -602,6 +613,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Failed to encode request parameters."
+          }
+        }
+      }
+    },
+    "requestError.forbidden" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access forbidden"
           }
         }
       }
@@ -635,6 +657,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No data was returned from the server."
+          }
+        }
+      }
+    },
+    "requestError.notFound" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resource not Found"
+          }
+        }
+      }
+    },
+    "requestError.rateLimited" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Too many Requests"
+          }
+        }
+      }
+    },
+    "requestError.serverError" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Error"
+          }
+        }
+      }
+    },
+    "requestError.unauthorized" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unauthorized access"
           }
         }
       }

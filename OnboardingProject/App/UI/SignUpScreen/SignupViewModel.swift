@@ -5,16 +5,18 @@
 //  Created by BrainX iOS Dev on 05/06/2025.
 //
 
+import Combine
 import Foundation
 
+@MainActor
 class SignupViewModel {
     
     // MARK: - Properties
     private let authRepo: AuthRepository
     
-    var onSignupSuccess: ((String) -> Void)?
-    var onSignupFailure: ((String) -> Void)?
-    var onValidationFailure: ((ValidationError) -> Void)?
+    let signupSuccess = PassthroughSubject<String, Never>()
+    let signupFailure = PassthroughSubject<String, Never>()
+    let validationFailure = PassthroughSubject<ValidationError, Never>()
     
     // MARK: - Initialization
     init(authRepo: AuthRepository = DefaultAuthRepository()) {
@@ -35,11 +37,17 @@ class SignupViewModel {
             confirmPassword: trimmedConfirmPassword
         )
         {
-            onValidationFailure?(error)
+            validationFailure.send(error)
             return
         }
         
-        signupWithAPI(email: trimmedEmail, username: trimmedUsername, password: trimmedPassword)
+        Task {
+            await signupWithAPI(
+                email: trimmedEmail,
+                username: trimmedUsername,
+                password: trimmedPassword
+            )
+        }
     }
     
     // MARK: - Validation
@@ -76,23 +84,19 @@ class SignupViewModel {
     }
     
     // MARK: - Signup Logic
-    private func signupWithAPI(email: String, username: String, password: String) {
-        authRepo.signup(
-            username: username,
-            email: email,
-            password: password,
-            confirmPassword: password
-        ) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let response):
-                    let name = response.data?.user?.username ?? username
-                    let message = "\(LocalizationKey.Validation.signupSuccess), \(name)."
-                    self?.onSignupSuccess?(message)
-                case .failure(let error):
-                    self?.onSignupFailure?(error.localizedDescription)
-                }
-            }
+    private func signupWithAPI(email: String, username: String, password: String) async {
+        do {
+            let response = try await authRepo.signup(
+                username: username,
+                email: email,
+                password: password,
+                confirmPassword: password
+            )
+            let name = response.data?.user?.username ?? username
+            let message = "\(LocalizationKey.Validation.signupSuccess), \(name)."
+            signupSuccess.send(message)
+        } catch {
+            signupFailure.send(error.localizedDescription)
         }
     }
 }

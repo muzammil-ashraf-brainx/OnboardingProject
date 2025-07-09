@@ -13,25 +13,19 @@ protocol AuthRepository {
         username: String,
         email: String,
         password: String,
-        confirmPassword: String,
-        completion: @escaping (Result<SignupResponse, Error>) -> Void
-    )
-    
+        confirmPassword: String
+    ) async throws -> SignupResponse
+
     func login(
         username: String,
-        password: String,
-        completion: @escaping (Result<SignupResponse, Error>) -> Void
-    )
-    
-    func resetPassword(
-        email: String,
-        completion: @escaping (Result<SignupResponse, Error>) -> Void
-    )
-    
-    func verifyOtp(
-        code: String,
-        completion: @escaping (Result<VerifyOtpResponse, Error>) -> Void
-    )
-    
-}
+        password: String
+    ) async throws -> SignupResponse
 
+    func resetPassword(
+        email: String
+    ) async throws -> SignupResponse
+
+    func verifyOtp(
+        code: String
+    ) async throws -> VerifyOtpResponse
+}

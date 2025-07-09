@@ -5,91 +5,95 @@
 //  Created by BrainX iOS Dev on 16/05/2025.
 //
 
+import Alamofire
 import Foundation
 
 class DefaultAuthRepository: AuthRepository {
+    private let session: Session
     
-    // MARK: - Public API Calls
+    init(session: Session = NetworkSession.shared) {
+        self.session = session
+    }
+    
     func signup(
         username: String,
         email: String,
         password: String,
-        confirmPassword: String,
-        completion: @escaping (Result<SignupResponse, Error>) -> Void
-    ) {
-        executeRequest(
-            .signup(username: username, email: email, password: password, confirmPassword: confirmPassword),
-            completion: completion
+        confirmPassword: String
+    ) async throws -> SignupResponse {
+        try await executeRequest(
+            .signup(
+                username: username,
+                email: email,
+                password: password,
+                confirmPassword: confirmPassword)
         )
     }
     
     func login(
         username: String,
-        password: String,
-        completion: @escaping (Result<SignupResponse, Error>) -> Void
-    ) {
-        executeRequest(
-            .login(username: username, password: password),
-            completion: completion
+        password: String
+    ) async throws -> SignupResponse {
+        try await executeRequest(
+            .login(
+                username: username,
+                password: password)
         )
     }
     
     func resetPassword(
-        email: String,
-        completion: @escaping (Result<SignupResponse, Error>) -> Void
-    ) {
-        executeRequest(
-            .resetPassword(email: email),
-            completion: completion
-        )
+        email: String
+    ) async throws -> SignupResponse {
+        try await executeRequest(.resetPassword(email: email))
     }
     
     func verifyOtp(
-        code: String,
-        completion: @escaping (Result<VerifyOtpResponse, Error>) -> Void
-    ) {
-        executeRequest(
-            .verifyOtp(code: code),
-            completion: completion
-        )
+        code: String
+    ) async throws -> VerifyOtpResponse {
+        try await executeRequest(.verifyOtp(code: code))
     }
     
-    // MARK: - Generic Request Handler
-    private func executeRequest<T: Decodable>(
-        _ requestType: Request,
-        completion: @escaping (Result<T, Error>) -> Void
-    ) {
+    // MARK: - Generic async/await request
+    private func executeRequest<T: Decodable>(_ request: Request) async throws -> T {
+        guard let url = request.url else {
+            throw RequestError.invalidURL
+        }
+        
+        let dataTask = session.request(
+            url,
+            method: request.method,
+            parameters: request.parameters,
+            encoding: JSONEncoding.default,
+            headers: HTTPHeaders(request.headers)
+        )
+            .validate()
+            .serializingDecodable(T.self)
+        
         do {
-            let request = try requestType.getURLRequest()
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    return completion(.failure(error))
-                }
-                
-                guard let data = data else {
-                    return completion(.failure(RequestError.noData))
-                }
-                
-                guard let httpResponse = response as? HTTPURLResponse,
-                      (200...299).contains(httpResponse.statusCode) else {
-                    return completion(.failure(APIError(data: data)))
-                }
-                
-                do {
-                    let decoded = try JSONDecoder().decode(T.self, from: data)
-                    completion(.success(decoded))
-                } catch {
-                    completion(.failure(error))
-                }
-            }.resume()
-            
+            return try await dataTask.value
         } catch {
-            completion(.failure(error))
+            if let afError = error.asAFError,
+               let responseCode = afError.responseCode {
+                throw mapError(statusCode: responseCode)
+            }
+            throw error
+        }
+    }
+    
+    private func mapError(statusCode: Int) -> RequestError {
+        switch statusCode {
+        case 400: return .badRequest
+        case 401: return .unauthorized
+        case 403: return .forbidden
+        case 404: return .notFound
+        case 429: return .rateLimited
+        case 500...599: return .serverError
+        default: return .unknownServerError
         }
     }
 }
 
+// MARK: - API Request Definitions
 extension DefaultAuthRepository {
     
     // MARK: - Auth API Requests
@@ -112,8 +116,15 @@ extension DefaultAuthRepository {
             }
         }
         
-        
-        var method: HTTPMethod { .post }
+        var method: Alamofire.HTTPMethod {
+            switch self {
+            case .signup,
+                    .login,
+                    .resetPassword,
+                    .verifyOtp:
+                return .post
+            }
+        }
         
         var headers: [String: String] {
             [NetworkHeaders.contentType(): NetworkHeaderValues.json()]
@@ -134,22 +145,15 @@ extension DefaultAuthRepository {
                     "password": password
                 ]
             case let .resetPassword(email):
-                return ["email": email]
+                return [
+                    "email": email
+                ]
             case let .verifyOtp(code):
-                return ["otp": code]
+                return [
+                    "otp": code
+                ]
             }
         }
-        
-        func getURLRequest() throws -> URLRequest {
-            guard let url = url else { throw RequestError.invalidURL }
-            
-            var request = URLRequest(url: url)
-            request.httpMethod = method.rawValue
-            request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
-            headers.forEach { request.setValue($1, forHTTPHeaderField: $0)}
-            
-            return request
-        }
     }
-    
 }
+

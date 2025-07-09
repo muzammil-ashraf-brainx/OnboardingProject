@@ -5,13 +5,16 @@
 //  Created by BrainX iOS Dev on 23/06/2025.
 //
 
+import Combine
 import Foundation
 
+@MainActor
 class ResetPasswordViewModel {
     private let authRepo: AuthRepository
     
-    var onResetSuccess: ((String) -> Void)?
-    var onResetFailure: ((String) -> Void)?
+    // MARK: - Publishers
+    let resetSuccess = PassthroughSubject<String, Never>()
+    let resetFailure = PassthroughSubject<String, Never>()
     
     // MARK: - Init
     init(authRepo: AuthRepository = DefaultAuthRepository()) {
@@ -40,14 +43,13 @@ class ResetPasswordViewModel {
     func resetPassword(email: String) {
         let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        authRepo.resetPassword(email: trimmedEmail) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self?.onResetSuccess?(trimmedEmail)
-                case .failure(let error):
-                    self?.onResetFailure?(error.localizedDescription)
-                }
+        Task {
+            do {
+                _ = try await authRepo.resetPassword(email: trimmedEmail)
+                resetSuccess.send(trimmedEmail)
+            }
+            catch {
+                resetFailure.send(error.localizedDescription)
             }
         }
     }

@@ -57,7 +57,11 @@ extension GetInfoViewController: GetInfoViewDelegate {
     
     func didUpdateSelection(section: Int, index: Int?) {
         viewModel.selectedIndices[section] = index
-        getInfoView.updateSelection(section: section, index: index)
+        // Convert data section index to collection view section index
+        // Data section 0 -> collection view section 1 (options)
+        // Data section 1 -> collection view section 3 (options)
+        let collectionViewSection = (section * 2) + 1
+        getInfoView.updateSelection(section: collectionViewSection, index: index)
     }
 }
 

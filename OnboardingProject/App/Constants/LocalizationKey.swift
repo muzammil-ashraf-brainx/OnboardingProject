@@ -108,11 +108,17 @@ enum LocalizationKey {
     
     enum RequestError {
         
-        static let invalidURL = "requestError.invalidURL"
-        static let failedToEncode = "requestError.failedToEncode"
-        static let invalidResponse = "requestError.invalidResponse"
-        static let noData = "requestError.noData"
-        static let unknown = "requestError.unknown"
-    }
+            static let invalidURL = "requestError.invalidURL"
+            static let failedToEncode = "requestError.failedToEncode"
+            static let invalidResponse = "requestError.invalidResponse"
+            static let noData = "requestError.noData"
+            static let badRequest = "requestError.badRequest"
+            static let unauthorized = "requestError.unauthorized"
+            static let forbidden = "requestError.forbidden"
+            static let notFound = "requestError.notFound"
+            static let rateLimited = "requestError.rateLimited"
+            static let serverError = "requestError.serverError"
+            static let unknown = "requestError.unknown"
+        }
     
 }

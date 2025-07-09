@@ -5,16 +5,19 @@
 //  Created by BrainX iOS Dev on 10/06/2025.
 //
 
+import Combine
 import Foundation
 
+@MainActor
 class LoginViewModel {
     
-    // MARK: - Callbacks
-    var onLoginSuccess: (() -> Void)?
-    var onLoginFailure: ((String) -> Void)?
-    var onValidationFailed: ((String) -> Void)?
-    var onForgotPassword: (() -> Void)?
+    // MARK: - Publishers
+    let loginSuccess = PassthroughSubject<Void, Never>()
+    let loginFailure = PassthroughSubject<String, Never>()
+    let validationFailure = PassthroughSubject<String, Never>()
+    let forgotPassword = PassthroughSubject<Void, Never>()
     
+    // MARK: - Dependencies
     private let authRepo: AuthRepository
     
     // MARK: - Init
@@ -28,27 +31,25 @@ class LoginViewModel {
         let trimmedPassword = password?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         
         if let error = validate(username: trimmedUsername, password: trimmedPassword) {
-            onValidationFailed?(error.localizedDescription)
+            validationFailure.send(error.localizedDescription)
             return
         }
         
-        authRepo.login(
-            username: trimmedUsername,
-            password: trimmedPassword
-        ) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self?.onLoginSuccess?()
-                case .failure(let error):
-                    self?.onLoginFailure?(error.localizedDescription)
-                }
+        Task {
+            do {
+                _ = try await authRepo.login(
+                    username: trimmedUsername,
+                    password: trimmedPassword
+                )
+                loginSuccess.send()
+            } catch {
+                loginFailure.send(error.localizedDescription)
             }
         }
     }
     
     func triggerForgotPassword() {
-        onForgotPassword?()
+        forgotPassword.send()
     }
     
     // MARK: - Validation
@@ -90,3 +91,4 @@ extension LoginViewModel {
         }
     }
 }
+

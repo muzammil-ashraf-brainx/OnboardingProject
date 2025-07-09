@@ -90,7 +90,6 @@ class GetInfoView: UIView {
         guard case .options(var items, _) = sections[section] else { return }
         sections[section] = .options(items: items, selectedIndex: index)
         collectionView.reloadSections(IndexSet(integer: section))
-        delegate?.didUpdateSelection(section: section / 2, index: index)
     }
     
     func updateDateOfBirthButton(title: String) {
@@ -222,6 +221,11 @@ extension GetInfoView: UICollectionViewDelegate {
         guard case .options(_, let currentIndex) = sections[section] else { return }
         let newIndex = currentIndex == index ? nil : index
         updateSelection(section: section, index: newIndex)
+        
+        // Convert collection view section index to original data section index
+        // Options sections are at odd indices (1, 3, 5, etc.), so we need (section - 1) / 2
+        let dataSectionIndex = (section - 1) / 2
+        delegate?.didUpdateSelection(section: dataSectionIndex, index: newIndex)
     }
 }
 

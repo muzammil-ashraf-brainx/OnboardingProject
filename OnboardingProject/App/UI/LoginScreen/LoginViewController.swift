@@ -5,6 +5,7 @@
 //  Created by BrainX iOS Dev on 10/06/2025.
 //
 
+import Combine
 import UIKit
 
 class LoginViewController: SuperViewController {
@@ -14,6 +15,7 @@ class LoginViewController: SuperViewController {
     
     // MARK: - Properties
     private let viewModel = LoginViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -22,27 +24,38 @@ class LoginViewController: SuperViewController {
         bindViewModel()
     }
     
-    
     // MARK: - Bind ViewModel
     private func bindViewModel() {
-        viewModel.onLoginSuccess = { [weak self] in
-            self?.navigateToGetInfoScreen()
-        }
+        viewModel.loginSuccess
+            .sink { [weak self] in
+                self?.navigateToGetInfoScreen()
+            }
+            .store(in: &cancellables)
         
-        viewModel.onLoginFailure = { [weak self] errorMessage in
-            self?.showAlert(
-                title: LocalizationKey.AlertTitle.loginFailed.localized,
-                message: errorMessage
-            )
-        }
+        viewModel.loginFailure
+            .sink { [weak self] errorMessage in
+                self?.showAlert(
+                    title: LocalizationKey.AlertTitle.loginFailed.localized,
+                    message: errorMessage
+                )
+            }
+            .store(in: &cancellables)
         
-        viewModel.onValidationFailed = { [weak self] validationMessage in
-            self?.showAlert(
-                title: LocalizationKey.AlertTitle.validationFailed.localized,
-                message: validationMessage
-            )
-        }
+        viewModel.validationFailure
+            .sink { [weak self] validationMessage in
+                self?.showAlert(
+                    title: LocalizationKey.AlertTitle.validationFailed.localized,
+                    message: validationMessage
+                )
+            }
+            .store(in: &cancellables)
         
+        viewModel.forgotPassword
+            .sink { [weak self] in
+                let resetPasswordVC = ResetPasswordViewController()
+                self?.navigationController?.pushViewController(resetPasswordVC, animated: true)
+            }
+            .store(in: &cancellables)
     }
     
     private func navigateToGetInfoScreen() {

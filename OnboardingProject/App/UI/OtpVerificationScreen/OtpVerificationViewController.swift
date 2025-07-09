@@ -5,6 +5,7 @@
 //  Created by BrainX iOS Dev on 17/06/2025.
 //
 
+import Combine
 import UIKit
 
 class OtpVerificationViewController: SuperViewController {
@@ -16,6 +17,7 @@ class OtpVerificationViewController: SuperViewController {
     private var viewModel: OTPViewModel!
     private var resetURL: String?
     private var email: String!
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Configure
     func configure(email: String) {
@@ -33,14 +35,14 @@ class OtpVerificationViewController: SuperViewController {
     
     // MARK: - ViewModel Bindings
     private func setupBindings() {
-        viewModel.updateUI = { [weak self] in
-            DispatchQueue.main.async {
+        viewModel.updateUI
+            .sink { [weak self] in
                 self?.updateVerifyButtonState()
             }
-        }
+            .store(in: &cancellables)
         
-        viewModel.onSuccess = { [weak self] resetURL in
-            DispatchQueue.main.async {
+        viewModel.success
+            .sink { [weak self] resetURL in
                 self?.resetURL = resetURL
                 self?.showAlert(
                     title: LocalizationKey.AlertTitle.success.localized,
@@ -51,22 +53,22 @@ class OtpVerificationViewController: SuperViewController {
                     }
                 )
             }
-        }
+            .store(in: &cancellables)
         
-        viewModel.onError = { [weak self] errorMessage in
-            DispatchQueue.main.async {
+        viewModel.error
+            .sink { [weak self] message in
                 self?.showAlert(
                     title: LocalizationKey.AlertTitle.verificationFailed.localized,
-                    message: errorMessage
+                    message: message
                 )
             }
-        }
+            .store(in: &cancellables)
         
-        viewModel.onResendSuccess = { [weak self] in
-            DispatchQueue.main.async {
+        viewModel.resendSuccess
+            .sink { [weak self] in
                 self?.navigateToOtpSentAlert(email: self?.email ?? "")
             }
-        }
+            .store(in: &cancellables)
         
         updateVerifyButtonState()
     }
@@ -94,7 +96,6 @@ class OtpVerificationViewController: SuperViewController {
     func verifyButtonTapped(_ sender: UIButton) {
         viewModel.verifyOTP()
     }
-    
 }
 
 // MARK: - OtpVerificationViewDelegate
