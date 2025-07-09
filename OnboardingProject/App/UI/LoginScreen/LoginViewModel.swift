@@ -8,14 +8,16 @@
 import Combine
 import Foundation
 
+@MainActor
 class LoginViewModel {
     
-    //MARK: Publishers
+    // MARK: - Publishers
     let loginSuccess = PassthroughSubject<Void, Never>()
     let loginFailure = PassthroughSubject<String, Never>()
     let validationFailure = PassthroughSubject<String, Never>()
     let forgotPassword = PassthroughSubject<Void, Never>()
     
+    // MARK: - Dependencies
     private let authRepo: AuthRepository
     
     // MARK: - Init
@@ -33,17 +35,15 @@ class LoginViewModel {
             return
         }
         
-        authRepo.login(
-            username: trimmedUsername,
-            password: trimmedPassword
-        ) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self?.loginSuccess.send()
-                case .failure(let error):
-                    self?.loginFailure.send(error.localizedDescription)
-                }
+        Task {
+            do {
+                _ = try await authRepo.login(
+                    username: trimmedUsername,
+                    password: trimmedPassword
+                )
+                loginSuccess.send()
+            } catch {
+                loginFailure.send(error.localizedDescription)
             }
         }
     }
@@ -91,3 +91,4 @@ extension LoginViewModel {
         }
     }
 }
+

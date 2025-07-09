@@ -9,103 +9,86 @@ import Alamofire
 import Foundation
 
 class DefaultAuthRepository: AuthRepository {
-    
     private let session: Session
     
     init(session: Session = NetworkSession.shared) {
         self.session = session
     }
     
-    
-    // MARK: - Public API Calls
     func signup(
         username: String,
         email: String,
         password: String,
-        confirmPassword: String,
-        completion: @escaping (Result<SignupResponse, Error>) -> Void
-    ) {
-        executeRequest(
-            .signup(username: username, email: email, password: password, confirmPassword: confirmPassword),
-            completion: completion
+        confirmPassword: String
+    ) async throws -> SignupResponse {
+        try await executeRequest(
+            .signup(
+                username: username,
+                email: email,
+                password: password,
+                confirmPassword: confirmPassword)
         )
     }
     
     func login(
         username: String,
-        password: String,
-        completion: @escaping (Result<SignupResponse, Error>) -> Void
-    ) {
-        executeRequest(
-            .login(username: username, password: password),
-            completion: completion
+        password: String
+    ) async throws -> SignupResponse {
+        try await executeRequest(
+            .login(
+                username: username,
+                password: password)
         )
     }
     
     func resetPassword(
-        email: String,
-        completion: @escaping (Result<SignupResponse, Error>) -> Void
-    ) {
-        executeRequest(
-            .resetPassword(email: email),
-            completion: completion
-        )
+        email: String
+    ) async throws -> SignupResponse {
+        try await executeRequest(.resetPassword(email: email))
     }
     
     func verifyOtp(
-        code: String,
-        completion: @escaping (Result<VerifyOtpResponse, Error>) -> Void
-    ) {
-        executeRequest(
-            .verifyOtp(code: code),
-            completion: completion
-        )
+        code: String
+    ) async throws -> VerifyOtpResponse {
+        try await executeRequest(.verifyOtp(code: code))
     }
     
-    // MARK: - Generic Request Handler
-    private func executeRequest<T: Decodable>(
-        _ request: Request,
-        completion: @escaping (Result<T, Error>) -> Void
-    ) {
+    // MARK: - Generic async/await request
+    private func executeRequest<T: Decodable>(_ request: Request) async throws -> T {
         guard let url = request.url else {
-            return completion(.failure(RequestError.invalidURL))
+            throw RequestError.invalidURL
         }
         
-        session.request(
+        let dataTask = session.request(
             url,
             method: request.method,
             parameters: request.parameters,
             encoding: JSONEncoding.default,
             headers: HTTPHeaders(request.headers)
         )
-        .validate()
-        .responseDecodable(of: T.self) { response in
-            switch response.result {
-            case .success(let value):
-                completion(.success(value))
-            case .failure:
-                completion(.failure(self.mapError(from: response)))
+            .validate()
+            .serializingDecodable(T.self)
+        
+        do {
+            return try await dataTask.value
+        } catch {
+            if let afError = error.asAFError,
+               let responseCode = afError.responseCode {
+                throw mapError(statusCode: responseCode)
             }
+            throw error
         }
     }
     
-    private func mapError<T>(from response: AFDataResponse<T>) -> Error {
-        if let data = response.data {
-            return APIError(data: data)
-        }
-        
-        guard let statusCode = response.response?.statusCode else {
-            return RequestError.unknownServerError
-        }
-        
+    private func mapError(statusCode: Int) -> RequestError {
         switch statusCode {
-        case 400: return RequestError.badRequest
-        case 401: return RequestError.unauthorized
-        case 403: return RequestError.forbidden
-        case 404: return RequestError.notFound
-        case 429: return RequestError.rateLimited
-        case 500...599: return RequestError.serverError
-        default: return RequestError.unknownServerError
+        case 400: return .badRequest
+        case 401: return .unauthorized
+        case 403: return .forbidden
+        case 404: return .notFound
+        case 429: return .rateLimited
+        case 500...599: return .serverError
+        default: return .unknownServerError
         }
     }
 }

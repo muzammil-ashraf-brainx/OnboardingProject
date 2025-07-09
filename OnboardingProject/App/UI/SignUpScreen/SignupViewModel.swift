@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 
+@MainActor
 class SignupViewModel {
     
     // MARK: - Properties
@@ -40,7 +41,13 @@ class SignupViewModel {
             return
         }
         
-        signupWithAPI(email: trimmedEmail, username: trimmedUsername, password: trimmedPassword)
+        Task {
+            await signupWithAPI(
+                email: trimmedEmail,
+                username: trimmedUsername,
+                password: trimmedPassword
+            )
+        }
     }
     
     // MARK: - Validation
@@ -77,23 +84,19 @@ class SignupViewModel {
     }
     
     // MARK: - Signup Logic
-    private func signupWithAPI(email: String, username: String, password: String) {
-        authRepo.signup(
-            username: username,
-            email: email,
-            password: password,
-            confirmPassword: password
-        ) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let response):
-                    let name = response.data?.user?.username ?? username
-                    let message = "\(LocalizationKey.Validation.signupSuccess), \(name)."
-                    self?.signupSuccess.send(message)
-                case .failure(let error):
-                    self?.signupFailure.send(error.localizedDescription)
-                }
-            }
+    private func signupWithAPI(email: String, username: String, password: String) async {
+        do {
+            let response = try await authRepo.signup(
+                username: username,
+                email: email,
+                password: password,
+                confirmPassword: password
+            )
+            let name = response.data?.user?.username ?? username
+            let message = "\(LocalizationKey.Validation.signupSuccess), \(name)."
+            signupSuccess.send(message)
+        } catch {
+            signupFailure.send(error.localizedDescription)
         }
     }
 }

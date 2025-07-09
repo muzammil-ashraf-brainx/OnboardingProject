@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 
+@MainActor
 class OTPViewModel {
     
     // MARK: - Input
@@ -15,7 +16,7 @@ class OTPViewModel {
     
     // MARK: - Output Publishers
     let updateUI = PassthroughSubject<Void, Never>()
-    let success = PassthroughSubject<String, Never>() 
+    let success = PassthroughSubject<String, Never>()
     let error = PassthroughSubject<String, Never>()
     let resendSuccess = PassthroughSubject<Void, Never>()
     
@@ -34,7 +35,7 @@ class OTPViewModel {
         self.userEmail = email
         bindOtpCode()
     }
-     
+    
     private func bindOtpCode() {
         $otpCode
             .sink { [weak self] code in
@@ -51,24 +52,30 @@ class OTPViewModel {
             return
         }
         
-        authRepo.verifyOtp(code: otpCode) { [weak self] result in
-            switch result {
-            case .success(let response):
-                self?.success.send(response.data.resetURL)
-            case .failure(let error):
-                self?.error.send(error.localizedDescription)
+        Task {
+            do {
+                let response = try await authRepo.verifyOtp(code: otpCode)
+                
+                self.success.send(response.data.resetURL)
+                
+            } catch {
+                self.error.send(error.localizedDescription)
+                
             }
         }
     }
     
     // MARK: - Resend OTP
     func resendOTP() {
-        authRepo.resetPassword(email: userEmail) { [weak self] result in
-            switch result {
-            case .success:
-                self?.resendSuccess.send()
-            case .failure(let error):
-                self?.error.send(error.localizedDescription)
+        Task {
+            do {
+                _ = try await authRepo.resetPassword(email: userEmail)
+                self.resendSuccess.send()
+                
+            } catch {
+                
+                self.error.send(error.localizedDescription)
+                
             }
         }
     }
